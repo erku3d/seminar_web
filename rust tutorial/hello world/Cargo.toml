@@ -1,0 +1,5 @@
+[package]
+
+name = "hello_wolrd"
+version = "0.0.1"
+authors = ["Eric"]
