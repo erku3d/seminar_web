@@ -1,7 +1,8 @@
 \documentclass[a4paper,12pt]{article}
 
 \usepackage[ngerman]{babel}
-\usepackage[ansinew]{inputenc}
+%\usepackage[ansinew]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{eurosym}
 \usepackage{graphicx}
 \usepackage{wrapfig}
@@ -9,7 +10,9 @@
 \usepackage{scrpage2}
 \usepackage{lmodern}
 \usepackage{xcolor}
+\usepackage{color}
 \usepackage[linkbordercolor=white]{hyperref} 
+\usepackage{listings}
 
 %%%%%%%Schriftart times %%%%%%%%%%
 % \usepackage{mathptmx}
@@ -39,7 +42,7 @@
 \clearscrheadfoot 
 
 %\ohead{\includegraphics[height=4cm]{img/dgb_jugend_logo.pdf}}
-%\cfoot{Seite \pagemark} 
+\cfoot{\pagemark} 
 
 \setlength{\headheight}{3.5cm}
 \setlength{\parindent}{0pt} 
@@ -52,7 +55,377 @@
 \renewcommand{\labelitemiii}{-}
 \renewcommand{\labelitemiv}{-}
 
+\newcommand\mpar[1]{\marginpar {\flushleft\sffamily\scriptsize #1}}
+\setlength{\marginparwidth}{3cm}
+
 
 \begin{document}
-Test
+
+\tableofcontents
+\newpage
+
+\setcounter{section}{3} 
+\section{Effective Rust}
+\subsection{The Stack and the Heap}
+\subsubsection*{Memory management}
+	\begin{itemize}
+	  \item stack ist sehr schnell
+	  \item Rust nutzt per default den Stack
+	  \item Speicher im Stack ist lokal zu einem Funktionsaufruf und in der Größe begrenzt
+	  \item Heap ist langsamer
+	  \item wird expliziet im Programm angefordert
+	  \item Speicher im Heap ist nicht in der Größe beschränkt und global zugreifbar
+	\end{itemize}
+
+\subsubsection*{The Stack}
+\begin{itemize}
+  \item wenn eine Funktion aufgerufen wird, wird für diese eine bestimmter Speicherbereich auf dem Stack für lokale Variablen reserviert
+  \item dies erfolgt automatisch und der Speicher wird automatisch nach beenden der Funktion wieder frei gegeben 
+  \item dies funktioniert sehr schnell
+  \item variablen sind allerdings nur während dem Funktionsaufruf gültig
+  \item Stack funktioniert nach dem LIFO-Prinzip (last in, first out) 
+  \item kann nicht genutzt werden, um Speicher an andere Funktionen zu übergeben 
+\end{itemize}
+
+\subsubsection*{The Heap}
+	\begin{itemize}
+	  \item genutzt wenn werte länger als der Funktionsaufruf gespeichert werden soll oder wenn Speicher zwischen Funktionen ausgetauscht werden muss
+	  \item im gegensatz zum Stack können im Heap "Löscher" entstehen, wenn Speicher freigegeben wird
+	  \item Werte im Heap bleiben so lange erhalten, bis der entsprechende  Speicherbereich frei gegeben wird
+	  \item 	die Adresse auf dem Heap wird in die lokale variable auf dem Stack gespeichert
+	  \newpage
+	  \item Bsp.: \verb|let x = Box::new(5)|
+	  \begin{itemize}
+	    \item Box belegt Speicher auf dem Heap
+	    \item die Adresse wird in x auf dem Stack gespeichert
+	    \item wenn die Funktion beendet wird und \verb|x| vom Stack gelöscht wird, wird die Funktion \textit{Drop} von Box aufgerufen und der Speicher auf dem Heap freigegeben
+	  \end{itemize}
+	 \end{itemize}
+
+\subsubsection*{Arguments and borrowing}
+	\begin{itemize}
+	  \item es können auch Referenzen auf werte im Stack übergeben werden (borrowing)
+	\end{itemize}
+	
+\subsubsection*{What do other languages do?}
+	\begin{itemize}
+	  \item die meisten anderen Sprachen mit einem Garbage Collector, belegen Speicher auf dem Heap 
+	\end{itemize}
+	
+\subsubsection*{Which to use?} \mpar{siehe Daten-\\strukturen}	
+	\begin{itemize}
+	  \item Warum benötigt man auch den Heap?
+	  \item der Stack arbeitet nur nach dem LIFO Prinzip 
+	  \item beim Heap arbeitet sehr allgemein und der Speicher kann in zufälliger Reihenfolge belegt und freigegeben werden, was das Management komplexer macht   
+	  \item 
+	\end{itemize}
+	
+\subsubsection*{Runtime Efficiency} 
+	\begin{itemize}
+	  \item den Stack zu verwalten ist sehr einfach
+	  \item der "stack-pointer" muss nur in- bzw. dekrementiert werden
+	  \item den Heap zu verwalten ist wesentlich komplizierter
+	\end{itemize}
+
+\subsubsection*{Semantic impact} 
+	\begin{itemize}
+	  \item Rust ist stark durch das LIFO Prinzip des Stacks beeinflusst $\rightarrow$ automatische Speicherverwaltung
+	  \item sollen die stärken des Heap besser ausgenutzt werden, so benötigt man entweder eine besser Unterstützung zu Laufzeit (bspw. Garbage Collector) oder der Programmiere muss sich selbst um korrekte Speichernutzung kümmern, was wiederum durch den Compiler überprüft werden muss (dies bietet der Rust Compiler nicht)
+	\end{itemize}
+
+\newpage
+\subsection{Testing}
+%\subsubsection*{The \textit{test} attribute}
+	\begin{itemize}
+	  \item soll eine Bibliothek geschrieben werden, so kann man diese testen, indem man eine Funktion mit dem Attribut \verb|#[test]| versieht in der die Funktionalität getestet wird
+	  \item ähnlich wie bei Python \verb|if __name__=='__main__':|
+	  \item ausführen des Tests mit \verb|cargo test|
+	  \item jeder Test der nicht \verb|panic!| irgendwo auslöst ist erfolgreich
+	  \item fällt ein Test negativ aus, so wird auch ein status code in \verb|$?| zurückgegeben
+	  \item es ist auch möglich zu testen, ob ein Programm abstürzt
+	  	\begin{itemize}
+	  	  \item Funktion mit dem Attribut \verb|#[should_panic]| versehen
+	  	  \item Test ist erfolgreich, wenn das Programm abstürzt
+	  	\end{itemize}
+	 \item mit \verb|assert_eq!| kann bspw. eine Funktion auf richtige Ergebnisse geprüft werden 
+	 \item Bsp.:  \verb|assert_eq!(4, foo(2));|
+	 	\begin{itemize}
+	 	  \item falls \verb|foo(2)| nicht \verb|4| zurück liefert, so wird \verb|panic!| ausgelöst und das Programm stürzt ab
+	 	  \item andernfalls passiert nichts und der Test ist bestanden
+	 	\end{itemize}
+	 \item weiterhin ist es auch möglich ein eigenes Modul für Tests zu schreiben, um einzelnen Tests zusammenzufassen 
+	 \item dieses Modul wird nur für den eigentlichen Test mit kompiliert $\rightarrow$ spart Kompilierzeit  und stellt sicher das der Test nicht im Release vorhanden ist
+	 \item eine weitere Variante ist eine eigene Test Crate zu schreiben, die die erstellte Bibliothek einbindet $\rightarrow$ wie man dies bei anderen Sprachen auch tun würde
+	 \item diese Test crate bekommt ihren eigenen Ordner
+	\end{itemize}
+
+\subsection{Conditional Compilation}
+\dots
+\subsection{Dokumentation}
+\subsubsection*{rustdoc}
+	\begin{itemize}
+	  \item die Rust Distribution enthält ein Tool zur Dokumentation \verb|rustdoc|, welchen ebenfalls von \verb|cargo doc| genutzt wird 
+	  \item die Doku kann entweder direkt aus dem Quellcode oder aus Markdown Datei erzeugt werden
+	\end{itemize}
+\subsubsection*{Documenting source code}
+	\begin{itemize}
+	  \item \verb|///| zeigt einen Dokumentations Kommentar an
+	  \item Dokumentations Kommentar werden in Markdown geschrieben
+	  \item jeder Kommentar muss in einer eigen Zeile stehen und bezieht sich auf die zeile darunter
+	  	\begin{itemize}
+	  	  \item[$\rightarrow$] \verb|/// Komentar| \\ \verb|let x = 7;|
+	  	  \item[$\rightarrow$] nicht: \verb|let x = 7; /// Kommentar| 
+	  	\end{itemize}
+	\end{itemize}
+
+\subsubsection*{Writing documentation comments}
+	\dots
+	\begin{itemize}
+%	  \item erste Zeile: Zusammenfassung der Funktionalität der Funktion, ein Satz, weiteres in eine Abschnitt darunter
+%	  \item Spezielle Abschnitte werden mit einer Überschrift versehen
+	\item es können spezielle Abschnitte definiert werden, bspw. \verb|/// # Examples|
+	\item dies ermöglicht es Beispiele in die Dokumentation zuschreiben, welche durch den Compiler auf ihre Funktionalität überprüft werden können 
+	\end{itemize}
+	\dots
+
+\subsection{Iterators}
+\dots\\
+\dots\\
+\dots
+\newpage	
+
+\section{Syntax and Semantics}
+\subsection{Variable Bindings}
+	\begin{itemize}
+	  \item in vielen anderen Sprachen nur als Variable bezeichnet
+	  \item Rust bietet aber noch andere Features
+	  \item Definition mit \verb|let|
+	  \item linke Seite ist Pattern
+	  \begin{itemize}
+	  	\item[$\rightarrow$] ermöglicht bspw. \verb|let (x,y) = (1,2)| 
+	  \end{itemize}
+	  \item Rust ist statisch typisiert, d.h. Datentypen werden bei der Definition nach einem \verb|:| angegeben und beim kompilieren überprüft
+	  \begin{itemize}
+	  	\item[$\rightarrow$] \verb|let x: i32 = 5;| 
+	  	\item "x ist eine Bindung mit dem Typ \verb|i32| und dem Wert \verb|5|"
+	  \end{itemize}
+	  \item Rust verfügt außerdem noch über Typableitung, falls der Kompiler Schlussfolgern kann welchen Typ eine Variable hat, muss dieser nicht explizit mit angegeben werden 
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|let x = 5;| 
+	  \end{itemize}
+	  \item per default sind Bindungen \textbf{unveränderlich}
+	  \item soll eine Bindung veränderlich sein, so muss \verb|mut| benutzt werden
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|let mut x = 5;| 
+	  \end{itemize}
+	  \item Rust legt viel Wert auf Sicherheit, daher sind alle Bindungn per default unveränderlich. Wird ein Wert einer Bindung verändert, der nicht geändert werden soll, so wird dies vom Compiler abgefangen. Soll die Bindung geändert werden, so muss \verb|mut| hinzugefügt werden.
+	  \item Bindings \textbf{müssen} vor dem benutzen initialisiert werden
+	\end{itemize}
+
+\subsection{Functions}
+	\begin{itemize}
+	  \item jedes Rust Programm hat mindestens eine Funktion 
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|fn main(){|\\ \verb|}| 
+	  \end{itemize}
+	  \item Parameter werden wie bei \verb|let| angegeben, mit dem Unterschied, dass Datentypen explizit angegeben werden müssen 
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|fn foo(x: i32, y: i32){...}| 
+	  \end{itemize}
+	  \item Rust Funktionen haben \textbf{genau einen} Rückgabewert 
+	  \item der Datentyp des Rückgabewertes wird nach einem \verb|->| angegeben
+	  \item die letzte Zeile einer Funktion entscheidet, was zurückgegeben wird und hat kein Semikolon am Ende
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|fn foo(x: i32, y: i32) -> i32 {| \\ 
+	      \verb|    x + y|\\ \verb|}| 
+	  \end{itemize}
+	  \item Rust ist ausdrucksbasiert und die Verwendung von Semikolons und geschweiften Klammern unterscheidet sich von denen die andere Sprachen verwenden
+	\end{itemize}
+\subsubsection*{Expressions vs. Statements}
+	\begin{itemize}
+	  \item Ausdrücken haben einen Rückgabewert, Anweisungen nicht
+	  \item Rust enthält nur zwei Arten von Anweisungen (Statements), alles andere sind Ausdrücke
+	  \item Deklarationsanweisung
+	  \begin{itemize}
+	    \item in anderen Sprache ist \verb|x = y = 5| möglich, in Rust nicht
+	    \item \verb|let x = 5;| ist eine Anweisung und hat keinen Rückgabewert
+	  \end{itemize}
+	  \item Ausdrucksanweisung
+	  \begin{itemize}
+	    \item wandelt einen Ausdruck in eine Anweisung um
+	    \item siehe Rückgabewert einer Funktion
+	    \item mit \verb|x + y;| würde \verb|()| zurückgegeben
+	  \end{itemize}
+	\end{itemize}
+\subsubsection*{Early returns}
+	\begin{itemize}
+	  \item keyword \verb|return|
+	\end{itemize}
+\subsubsection*{Diverging functions}
+	\begin{itemize}
+	  \item Funktionen die nicht zurück kommen
+	  \begin{itemize}
+	      \item[]
+	      \begin{verbatim}
+fn diverges() -> ! {
+    panic!("This function never returns!");
+}
+	      \end{verbatim}
+	  \end{itemize}
+	  \item \verb|panic!| ist ein Makro, was der gerade ausgeführte Thread mit der übergebenen Nachricht abstürzt
+	  \item da diese Funktion abstürzt kann sie nichts zurückgeben und hat den Rückgabetyp \verb|!|
+	\end{itemize}
+	
+\subsection{Primitive Types}
+	\begin{itemize}
+	  \item Rust hat einige Primitive Typen definiert
+	  \item weitere nützliche Typen werden durch eine Standardbibliothek zur Verfügung gestellt
+	\end{itemize}
+\subsubsection*{Booleans}
+	\begin{itemize}
+	  \item \verb|bool| mit den Werten \verb|true| und \verb|false|
+	\end{itemize}
+\subsubsection*{Char}
+	\begin{itemize}
+	  \item eine Unicode Zeichen
+	  \item wird in einfachen Anführungszeichen angegeben
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|let x = 'x';| 
+	  \end{itemize}
+	  \item 4 Bytes
+	\end{itemize}
+	
+\subsubsection{Numeric Types}
+	\begin{itemize}
+	  \item verschiedene Typen in unterschiedlichen Kategorien
+	  \begin{itemize}
+	    \item signed, unsigned
+	    \item fixed, variable
+	    \item floatingpoint, integer
+	  \end{itemize}
+	  \item zwei Teile: Kategorie und Größe (in Bits)
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|u16| (unsigned 16 Bit)
+	  \end{itemize}
+	  \item wird bei der Zuweisung nicht explizit ein Datentyp angegeben, kann Rust nicht Schlussfolgern, welcher genommen werden soll, deshalb gibt es folgende defaults:
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|let x = 42;  // i32| 
+	      \item[$\rightarrow$] \verb|let x = 1.0; // f64|
+	  \end{itemize}
+	  \item in Rust existieren auch Typen, deren Größe von der Größe der Pointer des jeweiligen Systems abhängt
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|isize| und \verb|usize| 
+	  \end{itemize}
+	\end{itemize}
+	
+\subsubsection*{Arrays}
+	\begin{itemize}
+	  \item Liste von Elementen mit fester Größe
+	  \item per default \textbf{unveränderlich}
+	  \item Arrays sind vom Typ \verb|[T;N]| wobei \verb|T| für eine Datentyp steht und \verb|N| die Anzahl der Elemente angibt
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|let a = [1,2,3]; // a: [i32; 3]| 
+	  \end{itemize}
+	  \item Arrays können auch mit einem Initialwert versehen werden
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|let a=[0;20]; // a: [i32; 3] |
+	      \item[] Array mit 20 Elementen, die alle den Wert \verb|0| haben 
+	  \end{itemize}
+	  \item die Größe eines Arrays kann über die Methode \verb|.len()| bestimmt werden
+	  \item auf die einzelnen Elemente kann über die Indizes zugegriffen werden
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|a[2];| 
+	  \end{itemize}
+	  \item der korrekte Zugriff auf Arrays wird zur Laufzeit überprüft
+	\end{itemize}
+\subsubsection*{Slices}
+	\begin{itemize}
+	  \item eine referenzierter Ausschnitt auf einen andere Datenstruktur
+	  \item erlaubt einen sicheren Zugriff auf einen bestimmten Teil eines Arrays, ohne diesen zu kopieren
+	  \item slices werden mittels einer bereits existierenden Variable erzeugt
+	  \item haben eine Länge, können veränderlich sein und verhalten sich wie Arrays
+	  \begin{itemize}
+	      \item[$\rightarrow$]
+	      \item []
+	       \begin{verbatim}
+let a = [0, 1, 2, 3, 4];
+
+// A slice of a: just the elements 1, 2, and 3
+let middle = &a[1..4]; 
+
+// A slice containing all of the elements in a	  
+let complete = &a[..]; 
+	  \end{verbatim}
+	  \end{itemize}
+	\end{itemize}
+	
+\subsubsection*{Tuples}
+	\begin{itemize}
+	  \item geordnete Liste fester Größe
+	  \begin{itemize}
+	      \item[$\rightarrow$] \verb|let x = (1,"hello");| 
+		  \item[$\rightarrow$] \verb|let x: (i32, &str) = (1, "hello");| 
+	  \end{itemize}
+	  \item Tupel können Elementen unterschiedlicher Datentypen enthalten
+	  \item man keinen einem Tupel ein anderes Tupel zuweisen, falls beide die gleichen Typen und Elementanzahl besitzen
+	  \begin{itemize}
+	  \item[]
+\begin{verbatim}
+let mut x = (1, 2); // x: (i32, i32)
+let y = (2, 3); // y: (i32, i32)
+
+x = y;
+\end{verbatim}
+	  \end{itemize}
+	 \item man kann Tupel mit \verb|let| Destrukturieren 
+	 \begin{itemize}
+	     \item[$\rightarrow$] \verb|let (x,y,z) = (1,2,3);| 
+	 \end{itemize}
+	 \item oder man greift über die Indizes auf die Elemente zu, dabei wird, im Gegensatz zu Arrays, mit \verb|.| auf die Elemente zugegriffen
+	 \begin{itemize}
+	     \item[]
+	     \begin{verbatim}
+let tuple = (1, 2, 3);
+
+let x = tuple.0;
+let y = tuple.1;
+let z = tuple.2;	     
+		 \end{verbatim}	      
+	 \end{itemize}
+	\end{itemize}
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
