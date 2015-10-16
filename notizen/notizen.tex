@@ -13,6 +13,7 @@
 \usepackage{color}
 \usepackage[linkbordercolor=white]{hyperref} 
 \usepackage{listings}
+\usepackage{verbatim}
 
 %%%%%%%Schriftart times %%%%%%%%%%
 % \usepackage{mathptmx}
@@ -68,6 +69,7 @@
 \section{Effective Rust}
 \subsection{The Stack and the Heap}
 \subsubsection*{Memory management}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Memory management}
 	\begin{itemize}
 	  \item stack ist sehr schnell
 	  \item Rust nutzt per default den Stack
@@ -78,6 +80,7 @@
 	\end{itemize}
 
 \subsubsection*{The Stack}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} The Stack}
 \begin{itemize}
   \item wenn eine Funktion aufgerufen wird, wird für diese eine bestimmter Speicherbereich auf dem Stack für lokale Variablen reserviert
   \item dies erfolgt automatisch und der Speicher wird automatisch nach beenden der Funktion wieder frei gegeben 
@@ -88,6 +91,7 @@
 \end{itemize}
 
 \subsubsection*{The Heap}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} The Heap}
 	\begin{itemize}
 	  \item genutzt wenn werte länger als der Funktionsaufruf gespeichert werden soll oder wenn Speicher zwischen Funktionen ausgetauscht werden muss
 	  \item im gegensatz zum Stack können im Heap "Löscher" entstehen, wenn Speicher freigegeben wird
@@ -103,16 +107,19 @@
 	 \end{itemize}
 
 \subsubsection*{Arguments and borrowing}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Arguments and borrowing}
 	\begin{itemize}
 	  \item es können auch Referenzen auf werte im Stack übergeben werden (borrowing)
 	\end{itemize}
 	
 \subsubsection*{What do other languages do?}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} What do other languages do?}
 	\begin{itemize}
 	  \item die meisten anderen Sprachen mit einem Garbage Collector, belegen Speicher auf dem Heap 
 	\end{itemize}
 	
-\subsubsection*{Which to use?} \mpar{siehe Daten-\\strukturen}	
+\subsubsection*{Which to use?} \mpar{siehe Daten-\\strukturen}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Which to use?}	
 	\begin{itemize}
 	  \item Warum benötigt man auch den Heap?
 	  \item der Stack arbeitet nur nach dem LIFO Prinzip 
@@ -121,6 +128,7 @@
 	\end{itemize}
 	
 \subsubsection*{Runtime Efficiency} 
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Runtime Efficiency}
 	\begin{itemize}
 	  \item den Stack zu verwalten ist sehr einfach
 	  \item der "stack-pointer" muss nur in- bzw. dekrementiert werden
@@ -128,6 +136,7 @@
 	\end{itemize}
 
 \subsubsection*{Semantic impact} 
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Semantic impact}
 	\begin{itemize}
 	  \item Rust ist stark durch das LIFO Prinzip des Stacks beeinflusst $\rightarrow$ automatische Speicherverwaltung
 	  \item sollen die stärken des Heap besser ausgenutzt werden, so benötigt man entweder eine besser Unterstützung zu Laufzeit (bspw. Garbage Collector) oder der Programmiere muss sich selbst um korrekte Speichernutzung kümmern, was wiederum durch den Compiler überprüft werden muss (dies bietet der Rust Compiler nicht)
@@ -163,11 +172,13 @@
 \dots
 \subsection{Dokumentation}
 \subsubsection*{rustdoc}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} rustdoc}
 	\begin{itemize}
 	  \item die Rust Distribution enthält ein Tool zur Dokumentation \verb|rustdoc|, welchen ebenfalls von \verb|cargo doc| genutzt wird 
 	  \item die Doku kann entweder direkt aus dem Quellcode oder aus Markdown Datei erzeugt werden
 	\end{itemize}
 \subsubsection*{Documenting source code}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Documenting source code}
 	\begin{itemize}
 	  \item \verb|///| zeigt einen Dokumentations Kommentar an
 	  \item Dokumentations Kommentar werden in Markdown geschrieben
@@ -179,6 +190,7 @@
 	\end{itemize}
 
 \subsubsection*{Writing documentation comments}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Writing documentation comments}
 	\dots
 	\begin{itemize}
 %	  \item erste Zeile: Zusammenfassung der Funktionalität der Funktion, ein Satz, weiteres in eine Abschnitt darunter
@@ -242,6 +254,7 @@
 	  \item Rust ist ausdrucksbasiert und die Verwendung von Semikolons und geschweiften Klammern unterscheidet sich von denen die andere Sprachen verwenden
 	\end{itemize}
 \subsubsection*{Expressions vs. Statements}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Expressions vs. Statements}
 	\begin{itemize}
 	  \item Ausdrücken haben einen Rückgabewert, Anweisungen nicht
 	  \item Rust enthält nur zwei Arten von Anweisungen (Statements), alles andere sind Ausdrücke
@@ -258,10 +271,12 @@
 	  \end{itemize}
 	\end{itemize}
 \subsubsection*{Early returns}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Early returns}
 	\begin{itemize}
 	  \item keyword \verb|return|
 	\end{itemize}
 \subsubsection*{Diverging functions}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Diverging functions}
 	\begin{itemize}
 	  \item Funktionen die nicht zurück kommen
 	  \begin{itemize}
@@ -282,10 +297,12 @@ fn diverges() -> ! {
 	  \item weitere nützliche Typen werden durch eine Standardbibliothek zur Verfügung gestellt
 	\end{itemize}
 \subsubsection*{Booleans}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Booleans}
 	\begin{itemize}
 	  \item \verb|bool| mit den Werten \verb|true| und \verb|false|
 	\end{itemize}
 \subsubsection*{Char}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Char}
 	\begin{itemize}
 	  \item eine Unicode Zeichen
 	  \item wird in einfachen Anführungszeichen angegeben
@@ -296,6 +313,7 @@ fn diverges() -> ! {
 	\end{itemize}
 	
 \subsubsection*{Numeric Types}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Numeric Types}
 	\begin{itemize}
 	  \item verschiedene Typen in unterschiedlichen Kategorien
 	  \begin{itemize}
@@ -319,6 +337,7 @@ fn diverges() -> ! {
 	\end{itemize}
 	
 \subsubsection*{Arrays}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Arrays}
 	\begin{itemize}
 	  \item Liste von Elementen mit fester Größe
 	  \item per default \textbf{unveränderlich}
@@ -339,6 +358,7 @@ fn diverges() -> ! {
 	  \item der korrekte Zugriff auf Arrays wird zur Laufzeit überprüft
 	\end{itemize}
 \subsubsection*{Slices}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Slices}
 	\begin{itemize}
 	  \item eine referenzierter Ausschnitt auf einen andere Datenstruktur
 	  \item erlaubt einen sicheren Zugriff auf einen bestimmten Teil eines Arrays, ohne diesen zu kopieren
@@ -360,6 +380,7 @@ let complete = &a[..];
 	\end{itemize}
 	
 \subsubsection*{Tuples}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Tuples}   
 	\begin{itemize}
 	  \item geordnete Liste fester Größe
 	  \begin{itemize}
@@ -393,6 +414,148 @@ let z = tuple.2;
 		 \end{verbatim}	      
 	 \end{itemize}
 	\end{itemize}
+	
+\subsection{Comments}	
+\begin{itemize}
+  \item zwei verschiedenen Arten von Kommentaren möglich
+  \item Zeile auskommentieren
+  \begin{itemize}
+      \item[$\rightarrow$] \verb|// alles nach '//' ist ein Kommentar, bis zum Ende der Zeile| 
+  \end{itemize}
+  \item \textit{doc comments} ermöglichen es die Dokumentation direkt in den Quellcode zu schreiben und unterstützen Markdown (siehe Dokumentation)
+  \begin{itemize}
+      \item[$\rightarrow$] \verb|/// Diese Funktion tut etwas.| 
+  \end{itemize}
+  \item dies ermöglicht es Beispiele direkt im Quellcode anzugeben und vom Rust Compiler zu Testen und die HTML Dokumentation zu erstellen
+\end{itemize}
+
+\subsection{if}
+\begin{itemize}
+  \item ähnelt in Rust mehr dem \verb|if|, welches man in dynamisch typisierten Sprachen findet
+  \begin{itemize}
+      \item[]
+\begin{verbatim}
+let x = 5;
+
+if x == 5 {
+    println!("x is five!");
+} else if x == 6 {
+    println!("x is six!");
+} else {
+    println!("x is not five or six :(");
+}
+\end{verbatim}
+	\item[] auch möglich:\\\verb|let y = if x == 5 { 10 } else { 15 }; // y: i32|\\ da \verb|if| ein Ausdruck ist	
+  \end{itemize}
+\end{itemize}
+
+\subsection{Loops}
+\subsubsection*{loop}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} loop}
+\begin{itemize}
+  \item Endlosschleife
+  \begin{itemize}
+  \item[]
+\begin{verbatim}
+loop {
+    println!("Loop forever!");
+}
+\end{verbatim} 
+  \end{itemize}
+\end{itemize}
+\subsubsection*{while}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} while}
+\begin{itemize}
+  \item[]
+\begin{verbatim}
+let mut x = 5; // mut x: i32
+let mut done = false; // mut done: bool
+
+while !done {
+    x += x - 3;
+
+    println!("{}", x);
+
+    if x % 5 == 0 {
+        done = true;
+    }
+}
+\end{verbatim}
+	\item mit \verb|while| können auch Endlosschleifen erzeugt werden 
+	\begin{itemize}
+	    \item[$\rightarrow$] \verb|while true { ...| 
+	\end{itemize}
+	\item allerdings wird dies vom Compiler anderes behandelt als \verb|loop|, daher sollte immer \verb|loop| für Endlosschleifen verwendet werden
+\end{itemize}
+\subsubsection*{for}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} for}
+\begin{itemize}
+  \item[]
+\begin{verbatim}
+for var in expression {
+    code
+}
+\end{verbatim}
+  \item \verb|expression| ist ein Iterator, der eine Folge von Elementen zurück gibt, wobei jedes Element einen Schleifendurchlauf entspricht 
+  \item Bsp.:
+\begin{verbatim}
+for x in 0..10 {
+    println!("{}", x); // x: i32
+}
+\end{verbatim}
+	\item \verb|0..10| gibt den ersten Wert (\verb|0|) und die Oberschranke an  (\verb|10| wird nicht ausgegeben)
+	\item ähnlich wie bei Python \verb|0..10| $\rightarrow [0,10)$ 
+	\item man hat hier nicht den C-Still (\verb|for (x = 0; x < 10; x++) {...}|) verwendet, da das manuelle angeben der Schleifenparameter oft zu Fehlern führt
+	\end{itemize}
+\subsubsection*{enumerate}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} enumerate}
+\begin{itemize}
+	  \item will man den Überblick behalten, wie viele Scheifendurchläufe schon ausgeführt wurden, so kann man \verb|.enumerate()| verwenden
+	  \begin{itemize}
+	      \item[] 
+\begin{verbatim}
+for (i,j) in (5..10).enumerate() {
+    println!("i = {} and j = {}", i, j);
+}
+\end{verbatim} 
+		\item \verb|i| enthält die aktuellen Durchlaufnummer (beginnend bei 0) und \verb|j| den entsprechenden Wert von 5 bis 9
+	  \end{itemize}
+ \item \verb|.enumerate()| kann auch auf Iteratoren angewendet werden
+ \begin{itemize}
+     \item[$\rightarrow$] \verb|for (linenumber, line) in lines.enumerate() {...}| 
+ \end{itemize}
+	\end{itemize}
+	
+\subsubsection*{Ending iteration early}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Ending iteration early}	
+\begin{itemize}
+  \item \verb|break| beendet eine Schleife vorzeitig
+  \item \verb|continue| beendet den aktuellen Durchlauf und geht zum nächsten
+\end{itemize}
+
+\subsubsection*{Loop labels}
+\addcontentsline{toc}{subsubsection}{\hspace{1em} Loop labels}
+\begin{itemize}
+  \item bei verschachtelten Schleifen kann es manchmal sinnvoll sein, anzugeben, welche Schleife abgebrochen bzw. fortgesetzt werden soll, dazu können in Rust Labels vergeben werden
+  \begin{itemize}
+  \item[]
+\begin{verbatim}
+'outer: for x in 0..10 {
+    'inner: for y in 0..10 {
+
+        // continues the loop over x
+        if x % 2 == 0 { continue 'outer; }
+        
+        // continues the loop over y 
+        if y % 2 == 0 { continue 'inner; } 
+        
+        println!("x: {}, y: {}", x, y);
+    }
+}
+\end{verbatim}
+  \end{itemize}
+\end{itemize}
+
 \end{document}
 
 
