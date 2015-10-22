@@ -1,0 +1,10 @@
+[package]
+name = "iron_hello_world"
+version = "0.1.0"
+authors = ["Eric Kunze <Eric.Kunze@gmx.net>"]
+
+[dependencies]
+iron = "*"
+
+[dependencies.urlencoded]
+version = "*"
