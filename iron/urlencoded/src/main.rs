@@ -34,8 +34,10 @@ fn print_query(hashmap: &&HashMap<String,Vec<String>>)-> Response{
          Some(name) => name //fals erfolgreich, gib die Datei zurück
      };
 
+    //erzeuge einen String
     let filename = String::from("html/".to_string() + &try_file[0]);
 
+    //öffne die angefragte Datei
     let path = Path::new(&filename);
     let display = path.display();
     let extension = path.extension();
@@ -56,17 +58,18 @@ fn print_query(hashmap: &&HashMap<String,Vec<String>>)-> Response{
      let mut s = String::new();
 
 
+    //erzeuen einer Response mit OK und dem Dateiinhalt im body
      let mut res = match file.read_to_string(&mut s) {
          Err(why) => panic!("couldn't read {}: {}", display,
                                                     Error::description(&why)),
          Ok(_) => Response::with((status::Ok,s)),
      };
 
+    //erzeuge String für den content-type auf basis der Dateiendung
      //unwarap führt zum Absturtz falls datei ohne Endung existiert und aufgerufen wird
      let ext = "text/".to_string()+extension.unwrap().to_str().unwrap();
 
      res.headers.set_raw("content-type", vec![ext.as_bytes().to_vec()]);
-
 
      return res
     // Response::with((status::Ok, "Hello!"))
@@ -74,8 +77,11 @@ fn print_query(hashmap: &&HashMap<String,Vec<String>>)-> Response{
 
 fn generate_response(path_vec: &Vec<String>) -> Response{
 
+    //wird aufgerufen, falls nur eine Datei (index.html u.a.) aufgerufen wird
+    //es soll nur eine Seite geladen werden -> kein GET Request
+
     // Create a path to the desired file
-    let s = if path_vec[0] == ""{
+    let s = if path_vec[0] == ""{ //falls keien Datei angegben -> default index.html
         "html/index.html".to_string()
     } else {
         "html/".to_string() + &path_vec[path_vec.len()-1]
@@ -86,7 +92,7 @@ fn generate_response(path_vec: &Vec<String>) -> Response{
     println!("display: {:?}", display);
     println!(" len: {:?}", path_vec.len());
 
-    //es soll nur eine Seite geladen werden -> kein GET Request
+
 
     //versuche die Datei zu öffnen
     //falls unbekannt gib 404 als Respons
@@ -111,6 +117,7 @@ fn generate_response(path_vec: &Vec<String>) -> Response{
         Ok(_) => Response::with((status::Ok,s)),
     };
 
+    //setzen des content-type -> Annahme das immer html
     res.headers.set_raw("content-type", vec![b"text/html".to_vec()]);
 
     println!("status: {:?}",res.status);
@@ -182,15 +189,20 @@ fn log_params(req: &mut Request) -> IronResult<Response> {
     //     Ok(r) => r
     // };
 
-
+    //überprüfe, ob url Query
     if req.url.query.is_some(){
 
-        let resp = match req.get_ref::<UrlEncodedQuery>() {
-            Ok(ref hashmap) => print_query(hashmap),//println!("Parsed GET request query string:\n {:?}", hashmap),
-            Err(_) => Response::with((status::Ok, "Hello!"))
-        };
+        // let resp = match req.get_ref::<UrlEncodedQuery>() {
+        //     Ok(ref hashmap) => print_query(hashmap),//println!("Parsed GET request query string:\n {:?}", hashmap),
+        //     Err(_) => Response::with((status::Ok, "Hello!"))
+        // };
+
+        //erzeugt hashmap
+        let hashmap = req.get_ref::<UrlEncodedQuery>().unwrap();
+        let resp = print_query(&hashmap);  //auswerten der Query -> erzeugt Response
+
         Ok(resp)
-    } else {
+    } else { //falls keine Query -> es soll nur seite geladen werden
         Ok(generate_response(&req.url.path))
     }
 
@@ -198,7 +210,7 @@ fn log_params(req: &mut Request) -> IronResult<Response> {
 
 }
 
-// Test out the server with `curl -i "http://localhost:3000/?name=franklin&name=trevor"`
+// Test out the server with `curl -i "http://localhost:3000/?name=franklin&name=trevor"  127.0.0.1`
 fn main() {
-    Iron::new(log_params).http("127.0.0.1:3000").unwrap();
+    Iron::new(log_params).http("1127.0.0.1:3000").unwrap();
 }
