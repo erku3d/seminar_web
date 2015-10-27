@@ -21,9 +21,20 @@ use urlencoded::UrlEncodedQuery;
 // }
 
 fn print_query(hashmap: &&HashMap<String,Vec<String>>)-> Response{
-
+	/*
      println!("Parsed GET request query string:\n {:?}", hashmap);
-
+     
+     let mut v: Vec<String> = vec![];
+     
+     let str_vec = &hashmap.get("vec").unwrap()[0];
+     
+     println!{"vec: {:?}",str_vec};
+    
+    let tmp = str_vec.split(","); 		
+	println!{"vec: {:?}",tmp};
+     */
+     
+	
      let try_file= match hashmap.get("file") {
          // The `description` method of `io::Error` returns a string that
          // describes the error
@@ -33,10 +44,12 @@ fn print_query(hashmap: &&HashMap<String,Vec<String>>)-> Response{
          }
          Some(name) => name //fals erfolgreich, gib die Datei zurück
      };
-
+	
     //erzeuge einen String
     let filename = String::from("html/".to_string() + &try_file[0]);
-
+	
+	//let filename = String::from("html/cd_catalog.xml");
+	
     //öffne die angefragte Datei
     let path = Path::new(&filename);
     let display = path.display();
@@ -212,5 +225,5 @@ fn log_params(req: &mut Request) -> IronResult<Response> {
 
 // Test out the server with `curl -i "http://localhost:3000/?name=franklin&name=trevor"  127.0.0.1`
 fn main() {
-    Iron::new(log_params).http("1127.0.0.1:3000").unwrap();
+    Iron::new(log_params).http("127.0.0.1:3000").unwrap();
 }

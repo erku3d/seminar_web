@@ -1,0 +1,4 @@
+[package]
+name = "string_to_int"
+version = "0.1.0"
+authors = ["Eric Kunze <Eric.Kunze@gmx.net>"]
