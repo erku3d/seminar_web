@@ -4,27 +4,95 @@
     <meta charset="utf-8">
     <title>Matrixmultiplikation</title>
     <script type="text/javascript">
-		function sendRequest(){
-			var ta_A = document.getElementById("mat_A").value.trim().split("\n");
-			var ta_B = document.getElementById("mat_B").value.trim();
-			
-			var mat_A = [];
-			
-			for (i = 0; i < ta_A.length; i++){
-				var elem = ta_A[i].split(",");
-				var zeile = []
-				for(j = 0; j < elem.length; j++){
-					zeile.push(elem[j]);
-				}
-				mat_A.push(zeile);
+
+        window.onload = function(e) {
+            document.getElementById("mat_A").placeholder = "1,2,3\n4,5,6\n7,8,9";
+            document.getElementById("mat_B").placeholder = "1,2,3\n4,5,6\n7,8,9";
+        };
+
+        function textareaToMatrix(id){
+            //Matrix A
+
+            var str = document.getElementById(id).value.trim();
+
+            if(str.length == 0)
+                throw "is empty";
+
+            //erzeuge Array aus den Zeilen
+			var rows = str.split("\n");
+
+			var mat = [];
+            var row_len;
+
+			for (i = 0; i < rows.length; i++){
+
+                //in jeder Zeile sind die einzelnen Werte durch "," getrennt
+                var row = rows[i].split(",");
+
+                //jede Zeile der Matrix muss die gleiche Anzahl an Elementen haben
+                if(i==0){
+                    row_len = row.length;
+                } else {
+                    if (row.length != row_len){
+                        throw "rows unevenly";
+                    }
+                }
+                //entfernt Leerzeichen etc. von den einzelnen Elementen
+                //TODO prüfen, ob das notwendig ist
+                for(j=0; j<row.length; j++)
+                    row[j] = row[j].trim();
+
+				mat.push(row);
 			}
-					
-			
-			alert(JSON.stringify(mat_A));
-			
-			
-			
-		}      
+            return mat;
+        }
+
+		function sendRequest(){
+            try{
+                var mat_A = textareaToMatrix("mat_A");
+            }
+            catch(err){
+                switch(err) {
+                    case "is empty":
+                        alert("Matrix A ist leer!");
+                        return;
+
+                    case "rows unevenly":
+                        alert("Zeilenlängen der Matrix A sind ungleich!");
+                        return;
+
+                    default:
+                        alert("Fehler: "+err);
+                        return;
+                }
+            }
+
+            try{
+                var mat_B = textareaToMatrix("mat_B");
+            }
+            catch(err){
+                switch(err) {
+                    case "is empty":
+                        alert("Matrix B ist leer!");
+                        return;
+
+                    case "rows unevenly":
+                        alert("Zeilenlängen der Matrix B sind ungleich!");
+                        return;
+
+                    default:
+                        alert("Fehler: "+err);
+                        return;
+                }
+            }
+
+
+
+			alert("\n"+JSON.stringify(mat_A)+"\n"+JSON.stringify(mat_B));
+
+
+
+		}
     </script>
   </head>
   <body>
@@ -35,9 +103,9 @@
             <td>B</td>
         </tr>
         <tr>
-            <td><textarea id="mat_A" rows="5" cols="10" placeholder="1,2,3" autocomplete="off"></textarea></td>
+            <td><textarea id="mat_A" rows="5" cols="10" autocomplete="off" wrap="off"></textarea></td>
             <td></td>
-            <td><textarea id="mat_B" rows="5" cols="10" placeholder="1,2,3" autocomplete="off"></textarea></td>
+            <td><textarea id="mat_B" rows="5" cols="10" autocomplete="off" wrap="off" ></textarea></td>
         </tr>
         <tr>
             <td><button type="button" id="btn" onclick="sendRequest()" >berechnen</button></td>
