@@ -48,6 +48,7 @@
         }
 
 		function sendRequest(){
+            
             try{
                 var mat_A = textareaToMatrix("mat_A");
             }
@@ -85,30 +86,63 @@
                         return;
                 }
             }
+			
+			
+			
+			var op = document.getElementById("operation").value;
+			
+			if(op == "add" || op == "diff"){
+				//addition, subtraktion -> A und B gleiche größe
+				if((mat_A.length != mat_B.length) || (mat_A[0].length != mat_B[0].length)){
+					alert("Beide Matrizen müssen dieselbe größe haben.");
+					return;
+				}
+			} else { //mul
+				//Mulltipikation ->  #spalten A = #Zeilen B
+				if(mat_A[0].length != mat_B.length){
+					alert("Spaltenanzhal von A muss gleich der Zeilenanzahl von B sein");
+					return;
+				}
+			}
+			
+			//erzeuge http request body
+			
+			var body = '{"op":"'+op+'",';
+			body = body + '"mat_A": ' + JSON.stringify(mat_A) +',';
+			body = body + '"mat_B": ' + JSON.stringify(mat_B) +'}';			
+			
 
-
-
-			alert("\n"+JSON.stringify(mat_A)+"\n"+JSON.stringify(mat_B));
-
-
+			alert(body);
 
 		}
     </script>
   </head>
   <body>
-    <table>
-        <tr>
+    <table> 
+        <tr align="center">
             <td>A</td>
             <td></td>
             <td>B</td>
+            <td></td>
+            <td>C</td>
         </tr>
         <tr>
             <td><textarea id="mat_A" rows="5" cols="10" autocomplete="off" wrap="off"></textarea></td>
-            <td></td>
+            <td>
+				<select id="operation">
+				  <option value="add">+</option>
+				  <option value="diff">-</option>
+				  <option value="mull" selected>&#149;</option>
+				</select>
+			</td>
             <td><textarea id="mat_B" rows="5" cols="10" autocomplete="off" wrap="off" ></textarea></td>
+            <td>=</td>
+            <td><textarea id="mat_c" rows="5" cols="10" autocomplete="off" wrap="off" readonly ></textarea></td>
         </tr>
         <tr>
             <td><button type="button" id="btn" onclick="sendRequest()" >berechnen</button></td>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
         </tr>
