@@ -3,9 +3,31 @@
   <head>
     <meta charset="utf-8">
     <title>Matrixmultiplikation</title>
+    <script type="text/javascript">
+		function sendRequest(){
+			var ta_A = document.getElementById("mat_A").value.trim().split("\n");
+			var ta_B = document.getElementById("mat_B").value.trim();
+			
+			var mat_A = [];
+			
+			for (i = 0; i < ta_A.length; i++){
+				var elem = ta_A[i].split(",");
+				var zeile = []
+				for(j = 0; j < elem.length; j++){
+					zeile.push(elem[j]);
+				}
+				mat_A.push(zeile);
+			}
+					
+			
+			alert(JSON.stringify(mat_A));
+			
+			
+			
+		}      
+    </script>
   </head>
   <body>
-  <form autocomplete="off" method="post">
     <table>
         <tr>
             <td>A</td>
@@ -13,18 +35,15 @@
             <td>B</td>
         </tr>
         <tr>
-            <td><textarea name="mat_A" rows="5" cols="10" required placeholder="1,2,3
-4,5,6" ></textarea></td>
+            <td><textarea id="mat_A" rows="5" cols="10" placeholder="1,2,3" autocomplete="off"></textarea></td>
             <td></td>
-            <td><textarea name="mat_B" rows="5" cols="10" required placeholder="1,2,3
-4,5,6" ></textarea></td>
+            <td><textarea id="mat_B" rows="5" cols="10" placeholder="1,2,3" autocomplete="off"></textarea></td>
         </tr>
         <tr>
-            <td><button type="button" >Click Me!</button></td>
-            <td><input type="submit"></td>
+            <td><button type="button" id="btn" onclick="sendRequest()" >berechnen</button></td>
+            <td></td>
             <td></td>
         </tr>
     </table>
-  </form>
   </body>
 </html>

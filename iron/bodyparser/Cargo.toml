@@ -1,0 +1,12 @@
+[package]
+name = "bodyparser"
+version = "0.1.0"
+authors = ["Eric Kunze <Eric.Kunze@gmx.net>"]
+
+[dependencies]
+iron = "*"
+persistent = "*"
+rustc-serialize = "*"
+
+[dependencies.bodyparser]
+git = "https://github.com/iron/body-parser.git"
