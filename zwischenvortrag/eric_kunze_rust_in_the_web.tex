@@ -1,0 +1,123 @@
+\documentclass[12pt]{beamer}
+
+\usepackage{color}
+\definecolor{TUCgreen}{HTML}{779a2b}
+
+\usetheme{Rochester}
+\usecolortheme[named=TUCgreen]{structure}
+%\usecolortheme{lily}	% Farbtheme
+
+
+%\setbeamercolor{frametitle}{bg=TUCgreen}
+%\setbeamercolor{headline}{bg=red}
+
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\author[Eric Kunze]{Eric Kunze}
+\title{\includegraphics[height=2cm]{Rust_Logo.eps}\\Rust in the Web}
+%\setbeamercovered{transparent} 
+\setbeamertemplate{navigation symbols}{} 
+%\logo{\includegraphics[height=1cm]{Rust_Logo.eps}} 
+%\institute{TU Chemnitz} 
+\date{04.11.2015} 
+\date{} 
+%\subject{Zwischenvortrag} 
+
+\usepackage{textpos}
+
+
+
+
+\begin{document}
+
+\begin{frame}{\centerline{Seminar Web Engineering - Zwischenvortrag}}
+	\begin{center}
+		\includegraphics[height=3cm]{Rust_Logo.eps}\\~\\
+		\Large \textbf{Rust in the Web}\\~\\
+		\normalsize Eric Kunze
+	\end{center}
+ \end{frame}
+
+\addtobeamertemplate{frametitle}{}{%
+\begin{textblock*}{10cm}(.74\textwidth,-1.5cm)
+	\begin{minipage}[c]{0.24\textwidth}
+		\footnotesize Rust in the Web 
+	\end{minipage}
+	\begin{minipage}[c]{0.2\textwidth}
+		\includegraphics[height=1cm]{Rust_Logo.eps}
+	\end{minipage}
+\end{textblock*}}
+
+%\begin{frame}
+%\tableofcontents
+%\end{frame}
+
+%\begin{frame}{Title}
+%	Inhalt
+%	\begin{itemize}
+%	  \item Test
+%	  \item Test
+%	\end{itemize}
+%\begin{block}{Blocktitel}		% normaler Block
+%	 Blockinhalt
+%\end{block}
+% 
+%\begin{exampleblock}{Blocktitel}	% Beispielblock
+%	 Blockinhalt
+%\end{exampleblock}
+% 
+%\begin{alertblock}{Blocktitel}		% Warnblock
+%	 Blockinhalt
+%\end{alertblock}
+%\end{frame}
+
+\begin{frame}{Rust}
+	\begin{itemize}
+	  \item Programmiersprache für systemnahe Programmierung 
+	  \item Mozilla Research
+	  \item[]
+	  \item Ziele:
+	  \begin{itemize}
+	    \item Sicherheit
+	    \item Geschwindigkeit
+	    \item Nebenläufigkeit
+	  \end{itemize}
+	  \item[]
+	  \item Webframework: IRON 
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Literaturquellen}
+	\begin{itemize}
+	  \item rust-lang.org
+	  \item ironframework.io
+	  \item rustless.org
+	  \item \footnotesize Bachelorarbeit:  Evaluation of performance and productivity metrics of potential programming languages in the HPC environment
+	  \item[]
+	  \item \includegraphics[height=3.5mm]{youtube_logo.eps}
+	  	\begin{itemize}
+	  	  \item GoogleTechTalks - The Rust Programming Language
+	  	  \item Linux.conf.au 2015 - Servo: Building a Parallel Browser
+	  	  \item stanfordonline - The Rust Programming Language 
+	  	\end{itemize}
+	  	\item[]
+	  \item reddit.com/r/rust
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Demo}
+	\begin{itemize}
+	  \item Client - Server Anwendung
+	  \item Matrix Rechner
+	\end{itemize}
+	\begin{center}
+		\includegraphics[height=4.5cm]{demo.jpg}
+	\end{center}
+\end{frame}
+
+
+\end{document}

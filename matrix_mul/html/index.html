@@ -2,10 +2,11 @@
 <html lang="de">
   <head>
     <meta charset="utf-8">
-    <title>Matrixmultiplikation</title>
+    <title>Matrix Rechner</title>
     <script type="text/javascript">
 
         window.onload = function(e) {
+            //funtkioniert nicht bei jedem Browser!
             document.getElementById("mat_A").placeholder = "1,2,3\n4,5,6\n7,8,9";
             document.getElementById("mat_B").placeholder = "1,2,3\n4,5,6\n7,8,9";
         };
@@ -39,6 +40,7 @@
                 }
                 //entfernt Leerzeichen etc. von den einzelnen Elementen
                 //TODO prüfen, ob das notwendig ist
+                //TODO prüfen ob zahl
                 for(j=0; j<row.length; j++)
                     row[j] = row[j].trim();
 
@@ -48,7 +50,7 @@
         }
 
 		function sendRequest(){
-            
+
             try{
                 var mat_A = textareaToMatrix("mat_A");
             }
@@ -86,11 +88,11 @@
                         return;
                 }
             }
-			
-			
-			
+
+
+
 			var op = document.getElementById("operation").value;
-			
+
 			if(op == "add" || op == "diff"){
 				//addition, subtraktion -> A und B gleiche größe
 				if((mat_A.length != mat_B.length) || (mat_A[0].length != mat_B[0].length)){
@@ -104,48 +106,131 @@
 					return;
 				}
 			}
-			
+
 			//erzeuge http request body
-			
+
 			var body = '{"op":"'+op+'",';
 			body = body + '"mat_A": ' + JSON.stringify(mat_A) +',';
-			body = body + '"mat_B": ' + JSON.stringify(mat_B) +'}';			
-			
+			body = body + '"mat_B": ' + JSON.stringify(mat_B) +'}';
+
 
 			alert(body);
 
 		}
     </script>
+    <style type="text/css">
+    * { box-sizing: border-box; }
+    html {
+    	min-height: 100%;
+    	font-size: 100%;
+    }
+
+    body {
+        background-color:#a0a0a0;
+        font-family: Avenir, Arial, sans-serif;
+        text-align:justify;
+    }
+
+    header#page_header{
+        position: relative;
+        top: -10px;
+    	width:100%;
+
+        padding: 5px 25px 5px 25px; /* 20px 20px 20px;*/
+        margin: 0 0 2% 0;
+
+        text-align: center;
+        font-size: 2.5rem;
+        color:#f1f1f1;
+        text-shadow: -1px -1px #4a4a4a ;
+
+        background-color:#4a4a4a;
+        box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
+        background: linear-gradient(#4a4a4a, black); /* Standard syntax */
+
+    }
+
+    section, textarea, button, select {
+        font-size: 2rem;
+    }
+
+    section{
+        width:90%;
+        height:auto;
+        max-width: 70rem;
+
+        margin-right: auto;
+        margin-left: auto;
+
+        width:100%;
+
+    	padding: 20px 20px 20px 20px;
+
+        background-color:#f1f1f1;
+    	box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
+
+    }
+
+    table{
+        margin-left: auto;
+        margin-right: auto;
+    }
+    tr#head{
+        text-align: center;
+    }
+
+    td{
+        padding: 0 10px 0 10px;
+    }
+
+    textarea{
+        background-color:#ffffff;
+        /*box-shadow: 0px 0px 5px #dc4e00;*/
+    }
+
+    textarea#mat_c{
+        background-color:#f1fff9;
+    }
+
+    button#btn{
+        width: 100%;
+        padding: 10px 0 10px 0;
+        margin-top: 25px;
+    }
+    </style>
   </head>
   <body>
-    <table> 
-        <tr align="center">
-            <td>A</td>
-            <td></td>
-            <td>B</td>
-            <td></td>
-            <td>C</td>
-        </tr>
-        <tr>
-            <td><textarea id="mat_A" rows="5" cols="10" autocomplete="off" wrap="off"></textarea></td>
-            <td>
-				<select id="operation">
-				  <option value="add">+</option>
-				  <option value="diff">-</option>
-				  <option value="mull" selected>&#149;</option>
-				</select>
-			</td>
-            <td><textarea id="mat_B" rows="5" cols="10" autocomplete="off" wrap="off" ></textarea></td>
-            <td>=</td>
-            <td><textarea id="mat_c" rows="5" cols="10" autocomplete="off" wrap="off" readonly ></textarea></td>
-        </tr>
-        <tr>
-            <td><button type="button" id="btn" onclick="sendRequest()" >berechnen</button></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </table>
+
+    <header id="page_header">
+        Matrix Rechner
+    </header>
+
+    <section>
+            <table >
+                <tr id="head">
+                    <td>A</td>
+                    <td></td>
+                    <td>B</td>
+                    <td></td>
+                    <td>C</td>
+                </tr>
+                <tr>
+                    <td><textarea id="mat_A" rows="5" cols="10" autocomplete="off" wrap="off"></textarea></td>
+                    <td>
+        				<select id="operation">
+        				  <option value="add">+</option>
+        				  <option value="diff">-</option>
+        				  <option value="mull" selected>&#149;</option>
+        				</select>
+        			</td>
+                    <td><textarea id="mat_B" rows="5" cols="10" autocomplete="off" wrap="off" ></textarea></td>
+                    <td>=</td>
+                    <td><textarea id="mat_c" rows="5" cols="10" autocomplete="off" wrap="off" readonly ></textarea></td>
+                </tr>
+                <tr>
+                    <td colspan="5"><button type="button" id="btn" onclick="sendRequest()" >berechnen</button></td>
+                </tr>
+            </table>
+    </section>
   </body>
 </html>
