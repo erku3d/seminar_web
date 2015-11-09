@@ -15,17 +15,24 @@ use std::error::Error;
 use std::io::prelude::*;
 
 #[derive(Debug, Clone, RustcDecodable)]
-struct MyStructure {
-    op: Option<String>,
-    mat_A: Vec<Vec<i32>>,
-    mat_B: Vec<Vec<i32>>,
+struct MyMatrix{
+    rows: i32,
+    cols: i32,
+    elem: Vec<i32>,
+}
+
+#[derive(Debug, Clone, RustcDecodable)]
+struct MyBody{
+    operation: Option<String>,
+    mat_a: MyMatrix,
+    mat_b: MyMatrix,
 }
 
 
 fn no_body_response(req: &Request) -> Response{
-	
+
 	let path_vec = &req.url.path;
-	
+
     //wird aufgerufen, falls nur eine Datei (index.html u.a.) aufgerufen wird
     //es soll nur eine Seite geladen werden -> kein GET Request
 
@@ -37,7 +44,7 @@ fn no_body_response(req: &Request) -> Response{
     };
     let path = Path::new(&s);
     let display = path.display();
-
+    println!("---------------------------------------------------");
     println!("display: {:?}", display);
     println!(" len: {:?}", path_vec.len());
 
@@ -66,11 +73,23 @@ fn no_body_response(req: &Request) -> Response{
         Ok(_) => Response::with((status::Ok,s)),
     };
 
+    //Dateiendung
+    let extension = path.extension().unwrap().to_str().unwrap();
+
+    //content-type setzen
+    match extension{
+        "css" => res.headers.set_raw("content-type", vec![b"text/css".to_vec()]),
+        "js" => res.headers.set_raw("content-type", vec![b"text/javascript".to_vec()]),
+        _ => res.headers.set_raw("content-type", vec![b"text/html".to_vec()]),
+    }
+
+
     //setzen des content-type -> Annahme das immer html
-    res.headers.set_raw("content-type", vec![b"text/html".to_vec()]);
+    //res.headers.set_raw("content-type", vec![b"text/html".to_vec()]);
 
     println!("status: {:?}",res.status);
     println!("headers: {:?}",res.headers);
+    println!("---------------------------------------------------");
 
     return res;
     // `file` goes out of scope, and gets closed
@@ -78,34 +97,32 @@ fn no_body_response(req: &Request) -> Response{
 }
 
 fn parse_body(req: &mut Request)-> Response{
-	
-    let struct_body = req.get::<bodyparser::Struct<MyStructure>>();
+
+    let struct_body = req.get::<bodyparser::Struct<MyBody>>();
     match struct_body {
-        Ok(Some(struct_body)) => println!("Parsed body:\n{:?}\n", struct_body),
-        Ok(None) => println!("No body"),
-        Err(err) => println!("Error: {:?}", err)
+        Ok(Some(struct_body)) => {println!("Parsed body:\n{:?}\n", struct_body);Response::with(status::Ok)},
+        Ok(None) => {println!("No body");Response::with(status::BadRequest)},
+        Err(err) => {println!("Error: {:?}", err); Response::with(status::InternalServerError)},
     }
 
-    Response::with(status::Ok)
-    
+    //Response::with(status::Ok)
+
 }
 
 
 
 fn process_request(req: &mut Request) -> IronResult<Response> {
-	
+
 	//hat der Request einen Body?
 	let body = req.get::<bodyparser::Raw>();
     match body {
-        Ok(Some(body)) => Ok(parse_body(req)),
+        Ok(Some(_)) => Ok(parse_body(req)),
         Ok(None) => Ok(no_body_response(req)),
-        Err(err) => Ok(Response::with((status::NotFound, "Seite nicht gefunden!")))
+        Err(_) => Ok(Response::with((status::NotFound, "Seite nicht gefunden!")))
     }
-	
+
 	//generate_response(&req);
-	
-	
-	
+
 }
 
 const MAX_BODY_LENGTH: usize = 1024 * 1024 * 10;
