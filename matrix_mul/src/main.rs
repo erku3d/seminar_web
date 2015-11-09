@@ -16,12 +16,13 @@ use std::io::prelude::*;
 
 #[derive(Debug, Clone, RustcDecodable)]
 struct MyStructure {
-    age: Vec<Vec<i32>>,
-    name: Option<String>,
+    op: Option<String>,
+    mat_A: Vec<Vec<i32>>,
+    mat_B: Vec<Vec<i32>>,
 }
 
 
-fn generate_response(req: &Request) -> Response{
+fn no_body_response(req: &Request) -> Response{
 	
 	let path_vec = &req.url.path;
 	
@@ -76,16 +77,16 @@ fn generate_response(req: &Request) -> Response{
     //Response::with((status::Ok, "Hello!"))
 }
 
-fn parse_body(req: &mut Request)-> IronResult<Response>{
+fn parse_body(req: &mut Request)-> Response{
 	
     let struct_body = req.get::<bodyparser::Struct<MyStructure>>();
     match struct_body {
-        Ok(Some(struct_body)) => println!("Parsed body:\n{:?} {:?}", struct_body, struct_body.age[0][1]),
+        Ok(Some(struct_body)) => println!("Parsed body:\n{:?}\n", struct_body),
         Ok(None) => println!("No body"),
         Err(err) => println!("Error: {:?}", err)
     }
 
-    Ok(Response::with(status::Ok))
+    Response::with(status::Ok)
     
 }
 
@@ -96,14 +97,14 @@ fn process_request(req: &mut Request) -> IronResult<Response> {
 	//hat der Request einen Body?
 	let body = req.get::<bodyparser::Raw>();
     match body {
-        Ok(Some(body)) => println!("Read body:\n{}", body),
-        Ok(None) => println!("No body"),
-        Err(err) => panic!("Error: {:?}", err)
+        Ok(Some(body)) => Ok(parse_body(req)),
+        Ok(None) => Ok(no_body_response(req)),
+        Err(err) => Ok(Response::with((status::NotFound, "Seite nicht gefunden!")))
     }
 	
-	generate_response(&req);
+	//generate_response(&req);
 	
-	parse_body(req)	
+	
 	
 }
 
