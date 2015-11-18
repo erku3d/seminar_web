@@ -3,72 +3,72 @@ extern crate bodyparser;
 extern crate persistent;
 extern crate rustc_serialize;
 
+pub mod matrix;
+use matrix::*;
 
-//use persistent::Read;
-
+#[doc(no_inline)]
+use rustc_serialize::json;
 use iron::status;
 use iron::prelude::*;
-
 use std::fs::File;
 use std::path::Path;
 use std::error::Error;
 use std::io::prelude::*;
 
-#[derive(Debug, Clone, RustcDecodable)]
-struct MyMatrix{
-    rows: i32,
-    cols: i32,
-    elem: Vec<i32>,
-}
 
+#[derive(Debug, Clone, RustcDecodable, RustcEncodable)] // Automatically generate trait implementations
+/// Matrix, deren Elemente alle Zeilenweise als Vektor vorliegen
+pub struct MyMatrix{
+    /// Zeilenanzahl
+    pub rows: i32,
+    /// Spaltenanzhal
+    pub cols: i32,
+    ///Elemente der Matrix
+    pub elem: Vec<i32>,
+}
+/// Struct in den das übermittelte JSON geparsed wird
 #[derive(Debug, Clone, RustcDecodable)]
-struct MyBody{
+pub struct MyBody{
     operation: Option<String>,
     mat_a: MyMatrix,
     mat_b: MyMatrix,
 }
 
+/// Erzeugt eine HTTP-Response auf eine Anfrage ohne Body. (GET Request)
+///
+/// Die Übergebenen Anfrage wird ausgewertet und die angegebene Datei (falls diese exisitiert) in eine Response gepackt.
+/// Wird eine Datei nicht gefunden, so wird ein entsprechender HTTP-Statuscode in die Response gepackt.
+///
+/// # Argumente
+///
+/// * `req` - vom Server empfange Anfrage
+pub fn get_response(req: &Request) -> Response{
 
-fn no_body_response(req: &Request) -> Response{
-
-	let path_vec = &req.url.path;
-
-    //wird aufgerufen, falls nur eine Datei (index.html u.a.) aufgerufen wird
-    //es soll nur eine Seite geladen werden -> kein GET Request
-
-    // Create a path to the desired file
+	let path_vec = &req.url.path; //liefert Pfad als Array
+    //Pfad auswerten
     let s = if path_vec[0] == ""{ //falls keien Datei angegben -> default index.html
         "html/index.html".to_string()
     } else {
-        "html/".to_string() + &path_vec[path_vec.len()-1]
+        "html/".to_string() + &path_vec[path_vec.len()-1] //im letzten Feld steht der Dateiname
     };
     let path = Path::new(&s);
     let display = path.display();
-    println!("---------------------------------------------------");
-    println!("display: {:?}", display);
-    println!(" len: {:?}", path_vec.len());
-
-
 
     //versuche die Datei zu öffnen
-    //falls unbekannt gib 404 als Respons
-    // Open the path in read-only mode, returns `io::Result<File>`
+    //falls unbekannt gib 404 als Response
     let mut file = match File::open(&path) {
-        // The `description` method of `io::Error` returns a string that
-        // describes the error
         Err(why) => {
-            println!("couldn't open {}: {}", display, Error::description(&why));
+            println!("Die Datei {} konnte nicht geöffnet werden.\n {}", display, Error::description(&why));
             return Response::with((status::NotFound, "Seite nicht gefunden!"))
         }
         Ok(file) => file //fals erfolgreich, gib die Datei zurück
     };
 
-    // Read the file contents into a string, returns `io::Result<usize>`
     let mut s = String::new();
 
-
+    //den Inhalt der Datei in einen String umwandeln und falls erfolgreich Response erzeugen
     let mut res = match file.read_to_string(&mut s) {
-        Err(why) => panic!("couldn't read {}: {}", display,
+        Err(why) => panic!("Datei {} konnte nicht gelesen werden.\n {}", display,
                                                    Error::description(&why)),
         Ok(_) => Response::with((status::Ok,s)),
     };
@@ -76,60 +76,100 @@ fn no_body_response(req: &Request) -> Response{
     //Dateiendung
     let extension = path.extension().unwrap().to_str().unwrap();
 
-    //content-type setzen
+    //content-type auf Basis der Dateiendung setzen
+
     match extension{
-        "css" => res.headers.set_raw("content-type", vec![b"text/css".to_vec()]),
-        "js" => res.headers.set_raw("content-type", vec![b"text/javascript".to_vec()]),
-        _ => res.headers.set_raw("content-type", vec![b"text/html".to_vec()]),
+        "css" => {res.headers.set_raw("content-type", vec![b"text/css".to_vec()]); res},
+        "js" => {res.headers.set_raw("content-type", vec![b"text/javascript".to_vec()]); res},
+        _ => {res.headers.set_raw("content-type", vec![b"text/html".to_vec()]); res},
     }
+    //println!("status: {:?}",res.status);
+    //println!("headers: {:?}",res.headers);
 
 
-    //setzen des content-type -> Annahme das immer html
-    //res.headers.set_raw("content-type", vec![b"text/html".to_vec()]);
-
-    println!("status: {:?}",res.status);
-    println!("headers: {:?}",res.headers);
-    println!("---------------------------------------------------");
-
-    return res;
-    // `file` goes out of scope, and gets closed
-    //Response::with((status::Ok, "Hello!"))
+    //return res;
 }
 
-fn parse_body(req: &mut Request)-> Response{
+/// Erzeugt eine HTTP-Response auf eine Anfrage mit Body. (POST Request)
+///
+/// Wertet den übergeben Body aus und ruft die entsprechenden Methoden zur Berechnung der Ergebnissmatrix auf
+/// Die Ergebnissmatrix wird anschließend in JSON codiert und in eine Response gepackt. Tritt ein Fehler auf, so wird ein
+/// entsprechender Fehlercode in die Response gepackt.
+///
+/// # Argumente
+///
+/// * `body` - der in den Struct `MyBody` geparste Body des Requests
+pub fn post_response(body: &MyBody) -> Response{
 
-    let struct_body = req.get::<bodyparser::Struct<MyBody>>();
-    match struct_body {
-        Ok(Some(struct_body)) => {println!("Parsed body:\n{:?}\n", struct_body);Response::with(status::Ok)},
-        Ok(None) => {println!("No body");Response::with(status::BadRequest)},
-        Err(err) => {println!("Error: {:?}", err); Response::with(status::InternalServerError)},
+    let mat_c = match body.operation{ //erzeugt Option<Vec<i32>> falls eine Matrix erzeugt wurde
+        Some(ref op) => { //ref op -> Pointer auf den Wert von op
+            match &op[..]{ //Welche Operation soll ausgeführt werden
+                "add" => { //Addition
+                    match vector_add(&body.mat_a.elem, //Matrixaddition
+                                     &body.mat_b.elem)
+                    {
+                        Some(c) => Some( MyMatrix{    //Falls erfolgreich Struct anlegen
+                                            rows: body.mat_a.rows,
+                                            cols: body.mat_a.cols,
+                                            elem: c }),
+                        None => {println!("Matrizen haben nicht die gleiche Größe"); None}
+                    }
+                },
+
+                "mull" => {
+                    match matrix_mul(&body.mat_a.elem, //Matrixmultiplikation
+                                     &body.mat_b.elem,
+                                     body.mat_a.rows as usize,
+                                     body.mat_a.cols as usize,
+                                     body.mat_b.cols as usize)
+                    {
+                        Some(c) => Some( MyMatrix{                  //Falls erfolgreich Struct anlegen
+                                            rows: body.mat_a.rows,
+                                            cols: body.mat_b.cols,
+                                            elem: c}),
+                        None => {println!("Matrizen sind falsch dimensioniert für Multiplikation"); None}
+                    }
+                },
+                _ => {println!("Operation existiert nicht"); None}
+            }
+        }
+        None => {println!("keine Operation angegeben"); None},
+    };
+
+    match mat_c{ // Falls Berechnung erfolgreich
+        Some(c) => {
+                Response::with((status::Ok, json::encode(&c).unwrap())) //Matrix als JSON codieren
+            },
+        None => {println!("Fehler"); Response::with((status::InternalServerError,"Operation konnten mit den Matrizen nicht ausgeführt werden"))}
     }
-
-    //Response::with(status::Ok)
-
 }
 
+/// Erhält den Request und erzeugt eine Response als IronResult<Response>.
+///
+/// Je nach verwendeter Methode wird die entsprechende Funktion zur Auswertung des Requests aufgerufen
+/// Wird Post verwendet, wird zusätzlich der Body in den Struct `MyBody` geparset.
+pub fn process_request(req: &mut Request) -> IronResult<Response> {
 
+    match req.method{
 
-fn process_request(req: &mut Request) -> IronResult<Response> {
+        iron::method::Method::Post => {
+            match req.get::<bodyparser::Struct<MyBody>>() {
+                Ok(Some(struct_body)) => Ok(post_response(&struct_body)),
+                Ok(None) => {println!("Post ohne Body");Ok(Response::with((status::InternalServerError,"Es wurde kein Body übergeben!")))},
+                Err(err) => {println!("Error: {:?}", err);Ok(Response::with((status::InternalServerError,"Anfrage konnte nicht ausgewertet werden.")))},
+            }
+        }
 
-	//hat der Request einen Body?
-	let body = req.get::<bodyparser::Raw>();
-    match body {
-        Ok(Some(_)) => Ok(parse_body(req)),
-        Ok(None) => Ok(no_body_response(req)),
-        Err(_) => Ok(Response::with((status::NotFound, "Seite nicht gefunden!")))
+        iron::method::Method::Get => Ok(get_response(req)),
+
+        _ => Ok(Response::with((status::InternalServerError,"Request Method nicht unterstützt"))),
     }
 
-	//generate_response(&req);
-
 }
-
 const MAX_BODY_LENGTH: usize = 1024 * 1024 * 10;
 
-//curl -i "localhost:3000/" -H "application/json" -d '{"name":"jason","age": [["1","2","3"],["1","2","3"]]}'
-// and check out the printed json in your terminal.
 fn main() {
+
     let mut chain = Chain::new(process_request);
     chain.link_before(persistent::Read::<bodyparser::MaxBodyLength>::one(MAX_BODY_LENGTH));
     Iron::new(chain).http("localhost:3000").unwrap();

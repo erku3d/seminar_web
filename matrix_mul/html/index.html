@@ -24,7 +24,7 @@
                     <td>C</td>
                 </tr>
                 <tr>
-                    <td><textarea id="mat_A" rows="5" cols="10" autocomplete="off" wrap="off" onkeypress="onlyNumbers(event)"></textarea></td>
+                    <td><textarea id="mat_A" class="txtInput" rows="5" cols="10" autocomplete="off" wrap="off"  placeholder="1,2,3"></textarea></td>
                     <td>
         				<select id="operation">
         				  <option value="add">+</option>
@@ -32,9 +32,9 @@
         				  <option value="mull" selected>&#149;</option>
         				</select>
         			</td>
-                    <td><textarea id="mat_B" rows="5" cols="10" autocomplete="off" wrap="off" onkeypress="onlyNumbers(event)"></textarea></td>
+                    <td><textarea id="mat_B" class="txtInput" rows="5" cols="10" autocomplete="off" wrap="off"  placeholder="1,2,3"></textarea></td>
                     <td>=</td>
-                    <td><textarea id="mat_c" rows="5" cols="10" autocomplete="off" wrap="off" readonly ></textarea></td>
+                    <td><textarea id="mat_C" rows="5" cols="10" autocomplete="off" wrap="off" readonly ></textarea></td>
                 </tr>
                 <tr>
                     <td colspan="5"><button type="button" id="btn" onclick="sendRequest()" >berechnen</button></td>

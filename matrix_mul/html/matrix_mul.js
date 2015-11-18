@@ -1,11 +1,6 @@
-window.onload = function(e) {
-    //funtkioniert nicht bei jedem Browser!
-    document.getElementById("mat_A").placeholder = "1,2,3\n4,5,6\n7,8,9";
-    document.getElementById("mat_B").placeholder = "1,2,3\n4,5,6\n7,8,9";
-
-};
 
 function onlyNumbers(evt) {
+    //onkeypress="onlyNumbers(event)"
   var theEvent = evt || window.event;
   var key = theEvent.keyCode || theEvent.which;
   key = String.fromCharCode( key );
@@ -55,8 +50,11 @@ function textareaToMatrix(id){
             }
         }
         //entfernt Leerzeichen etc. von den einzelnen Elementen
-        //TODO prüfen, ob das notwendig ist
         for(j=0; j<row.length; j++){
+            if(row[j].indexOf('.') > -1 || isNaN(row[j])) //falls keine Zahl
+                throw "Not an Integer";
+
+
             row[j] = row[j].trim();
             mat.push(row[j]);
         }
@@ -70,6 +68,7 @@ function sendRequest(){
         var mat_A = textareaToMatrix("mat_A");
     }
     catch(err){
+        document.getElementById("mat_A").focus();
         switch(err) {
             case "is empty":
                 alert("Matrix A ist leer!");
@@ -77,6 +76,10 @@ function sendRequest(){
 
             case "rows unevenly":
                 alert("Zeilenlängen der Matrix A sind ungleich!");
+                return;
+
+            case "Not an Integer":
+                alert("Matrix A darf nur aus ganzen Zahlen bestehen!");
                 return;
 
             default:
@@ -89,6 +92,7 @@ function sendRequest(){
         var mat_B = textareaToMatrix("mat_B");
     }
     catch(err){
+        document.getElementById("mat_B").focus();
         switch(err) {
             case "is empty":
                 alert("Matrix B ist leer!");
@@ -96,6 +100,10 @@ function sendRequest(){
 
             case "rows unevenly":
                 alert("Zeilenlängen der Matrix B sind ungleich!");
+                return;
+
+            case "Not an Integer":
+                alert("Matrix B darf nur aus ganzen Zahlen bestehen!");
                 return;
 
             default:
@@ -124,10 +132,9 @@ function sendRequest(){
 
     //erzeuge http request body
 
-    var body = '{"op":"'+op+'",';
+    var body = '{"operation":"'+op+'",';
     body = body + '"mat_a": ' + JSON.stringify(mat_A) +',';
     body = body + '"mat_b": ' + JSON.stringify(mat_B) +'}';
-
 
     //alert(body);
 
@@ -135,14 +142,36 @@ function sendRequest(){
     var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
-          alert(xhttp);
+          showResult(xhttp.responseText);
         } else if ( xhttp.readyState == 4 && xhttp.status != 200){
-          alert("Fehler! "+xhttp.statusText);
+          alert("Fehler! "+xhttp.statusText+"\n"+xhttp.responseText);
         }
       }
 
       xhttp.open("POST", "index.html", true);
       xhttp.setRequestHeader("Content-type", "application/json");
       xhttp.send(body); //sendet Text im Body
+
+}
+
+function showResult(resp){
+    var mat = JSON.parse(resp);
+
+    //alert(mat.rows + "\n" + mat.cols +"\n"+ mat.elem);
+
+    var val = mat.elem[0];
+
+    for(i=1; i<mat.elem.length; i++){
+
+        if(i % mat.cols == 0)
+            val = val + "\n";
+        else
+            val = val + ",";
+
+        val = val + mat.elem[i];
+    }
+
+    //alert(val);
+    document.getElementById("mat_C").value = val;
 
 }
