@@ -1,16 +1,4 @@
 
-function onlyNumbers(evt) {
-    //onkeypress="onlyNumbers(event)"
-  var theEvent = evt || window.event;
-  var key = theEvent.keyCode || theEvent.which;
-  key = String.fromCharCode( key );
-  var regex = /[0-9]|\.|\,|\r/;
-  if( !regex.test(key) ) {
-    theEvent.returnValue = false;
-    if(theEvent.preventDefault) theEvent.preventDefault();
-  }
-}
-
 function getMatrixObject(rows,cols,elem){
     return {
         rows:rows,
@@ -151,6 +139,8 @@ function sendRequest(){
       xhttp.open("POST", "index.html", true);
       xhttp.setRequestHeader("Content-type", "application/json");
       xhttp.send(body); //sendet Text im Body
+      
+      document.getElementById("mat_C").value = "Matrix wird berechnet ...";
 
 }
 
@@ -174,4 +164,35 @@ function showResult(resp){
     //alert(val);
     document.getElementById("mat_C").value = val;
 
+}
+
+function clearTextArea(){
+	
+	document.getElementById("mat_A").value = "";
+	document.getElementById("mat_B").value = "";
+	document.getElementById("mat_C").value = "";
+	document.getElementById("mat_A").focus();
+}
+
+function randomMat(id){
+	
+	var s = ""
+	
+	for(i=0;i<200;i++){
+		for(j=0;j<200;j++){
+			var r = Math.floor((Math.random() * 100) + 1);
+			
+			if(j>0)
+				s = s + "," + r;
+			else
+				s = s + r;
+			
+		}
+		s=s+"\n";
+	}
+	
+	
+	
+	
+	document.getElementById(id).value = s;
 }

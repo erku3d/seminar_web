@@ -19,25 +19,32 @@
                 <tr id="head">
                     <td>A</td>
                     <td></td>
-                    <td>B</td>
+                    <td colspan="2">B</td>
                     <td></td>
                     <td>C</td>
                 </tr>
                 <tr>
-                    <td><textarea id="mat_A" class="txtInput" rows="5" cols="10" autocomplete="off" wrap="off"  placeholder="1,2,3"></textarea></td>
+                    <td><textarea id="mat_A" class="txtInput" rows="10" cols="20" autocomplete="off" wrap="off"  placeholder="1,2,3"></textarea></td>
                     <td>
         				<select id="operation">
         				  <option value="add">+</option>
-        				  <option value="diff">-</option>
         				  <option value="mull" selected>&#149;</option>
         				</select>
         			</td>
-                    <td><textarea id="mat_B" class="txtInput" rows="5" cols="10" autocomplete="off" wrap="off"  placeholder="1,2,3"></textarea></td>
+                    <td colspan="2"><textarea id="mat_B" class="txtInput" rows="10" cols="20" autocomplete="off" wrap="off"  placeholder="1,2,3"></textarea></td>
                     <td>=</td>
-                    <td><textarea id="mat_C" rows="5" cols="10" autocomplete="off" wrap="off" readonly ></textarea></td>
+                    <td><textarea id="mat_C" rows="10" cols="20" autocomplete="off" wrap="off" readonly ></textarea></td>
                 </tr>
                 <tr>
-                    <td colspan="5"><button type="button" id="btn" onclick="sendRequest()" >berechnen</button></td>
+                    <td colspan="6"><button type="button" id="btn_send" onclick="sendRequest()" >Berechnen</button></td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+						<button type="button" id="btn_rand" onclick="randomMat('mat_A'),randomMat('mat_B')" >Random</button> 
+					</td>
+					<td colspan="3">
+						<button type="button" id="btn_clear" onclick="clearTextArea()" >Löschen</button>
+                    </td>
                 </tr>
             </table>
     </section>
