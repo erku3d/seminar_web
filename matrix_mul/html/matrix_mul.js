@@ -139,7 +139,7 @@ function sendRequest(){
       xhttp.open("POST", "index.html", true);
       xhttp.setRequestHeader("Content-type", "application/json");
       xhttp.send(body); //sendet Text im Body
-      
+
       document.getElementById("mat_C").value = "Matrix wird berechnet ...";
 
 }
@@ -167,32 +167,64 @@ function showResult(resp){
 }
 
 function clearTextArea(){
-	
+
 	document.getElementById("mat_A").value = "";
 	document.getElementById("mat_B").value = "";
 	document.getElementById("mat_C").value = "";
 	document.getElementById("mat_A").focus();
 }
 
-function randomMat(id){
-	
-	var s = ""
-	
-	for(i=0;i<200;i++){
-		for(j=0;j<200;j++){
-			var r = Math.floor((Math.random() * 100) + 1);
-			
+function getRandMat(r,c){
+    var s = "";
+
+    for(i=0;i<r;i++){
+		for(j=0;j<c;j++){
+			var randInt = Math.floor((Math.random() * 10) + 1);
+
 			if(j>0)
-				s = s + "," + r;
+				s = s + "," + randInt;
 			else
-				s = s + r;
-			
+				s = s + randInt;
+
 		}
 		s=s+"\n";
 	}
-	
-	
-	
-	
-	document.getElementById(id).value = s;
+
+    return s;
+
+}
+
+
+function randomMat(){
+
+    var r = document.getElementById("a_r").value;
+    var c = document.getElementById("a_c").value;
+
+    if(r>199){
+        r = 200
+        document.getElementById("a_r").value = 200
+    }
+
+    if(c>199){
+        c = 200
+        document.getElementById("a_c").value = 200
+    }
+
+	document.getElementById('mat_A').value = getRandMat(r,c);
+
+    r = document.getElementById("b_r").value;
+    c = document.getElementById("b_c").value;
+
+    if(r>199){
+        r = 200
+        document.getElementById("b_r").value = 200
+    }
+
+    if(c>199){
+        c = 200
+        document.getElementById("b_c").value = 200
+    }
+
+	document.getElementById('mat_B').value = getRandMat(r,c);
+
 }

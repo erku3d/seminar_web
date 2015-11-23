@@ -3,7 +3,7 @@ use std::sync::{Arc, Mutex};
 extern crate num_cpus;
 
 
-pub fn hello_thread(a: &Vec<i32>) -> Vec<i32>{
+pub fn hello_thread(a: &Vec<i32>) ->  Option<Vec<i32>>{
 
     let c = Arc::new(Mutex::new(vec![0;a.len()]));
 
@@ -42,7 +42,8 @@ pub fn hello_thread(a: &Vec<i32>) -> Vec<i32>{
         h.join().unwrap();
     }
 
-    return c.lock().unwrap().clone();
+    Some(c.lock().unwrap().clone())
+    
 
     //println!("{:?}\n{:?}", ca, a);
 

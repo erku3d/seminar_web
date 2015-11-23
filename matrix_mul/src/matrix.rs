@@ -1,11 +1,16 @@
 //! einfache Operationen auf Matrizen
 
+use std::thread;
+use std::sync::{Arc, Mutex};
+extern crate num_cpus;
+
+
 /// Multiplikation zweier linearisierten Matrizen
 ///
 /// # Argumente
 ///
-/// * `a` - Matrix a als Vektor
-/// * `b` - Matrix b als Vektor
+/// * `a` - Matrix a Zeilenweise als Vektor
+/// * `b` - Matrix b Zeilenweise als Vektor
 /// * `l` - Zeilenanzahl von Matrix a
 /// * `m` - Spaltenanzahl von Matrix a bzw. Spaltenanzahl von Matrix b
 /// * `n` - Spaltenanzahl von Matrix b
@@ -73,4 +78,6 @@ pub fn vector_add(a: &Vec<i32>,b: &Vec<i32>) -> Option<Vec<i32>>{
     }
 
     Some(c)
+
+
 }

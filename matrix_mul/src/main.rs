@@ -105,7 +105,7 @@ pub fn post_response(body: &MyBody) -> Response{
         Some(ref op) => { //ref op -> Pointer auf den Wert von op
             match &op[..]{ //Welche Operation soll ausgeführt werden
                 "add" => { //Addition
-                    match vector_add(&body.mat_a.elem, //Matrixaddition
+                     match vector_add(&body.mat_a.elem, //Matrixaddition
                                      &body.mat_b.elem)
                     {
                         Some(c) => Some( MyMatrix{    //Falls erfolgreich Struct anlegen

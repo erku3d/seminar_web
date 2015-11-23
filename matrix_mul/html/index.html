@@ -38,15 +38,19 @@
                 <tr>
                     <td colspan="6"><button type="button" id="btn_send" onclick="sendRequest()" >Berechnen</button></td>
                 </tr>
+                <td colspan="6">
+                    A: <input type="number" max="200" id="a_r"> x <input type="number" max="200" id="a_c"><br>
+                    B: <input type="number" max="200" id="b_r"> x <input type="number" max="200" id="b_c">
+                </td>
                 <tr>
                     <td colspan="3">
-						<button type="button" id="btn_rand" onclick="randomMat('mat_A'),randomMat('mat_B')" >Random</button> 
+						<button type="button" id="btn_rand" onclick="randomMat()" >Random</button>
 					</td>
 					<td colspan="3">
 						<button type="button" id="btn_clear" onclick="clearTextArea()" >Löschen</button>
                     </td>
                 </tr>
-            </table>
+            </table><br>
     </section>
   </body>
 </html>

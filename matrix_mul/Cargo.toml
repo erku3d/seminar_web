@@ -7,6 +7,7 @@ authors = ["Eric Kunze <eric.kunze@gmx.net>"]
 iron = "*"
 persistent = "*"
 rustc-serialize = "*"
+num_cpus = "*"
 
 [dependencies.bodyparser]
 git = "https://github.com/iron/body-parser.git"
