@@ -7,6 +7,11 @@
 \usecolortheme[named=TUCgreen]{structure}
 %\usecolortheme{lily}	% Farbtheme
 
+\setbeamertemplate{itemize items}[square]
+\setbeamertemplate{enumerate items}[square]
+\setbeamertemplate{section in toc}[square]
+\setbeamerfont{section number projected}{size=\normalsize}
+
 
 %\setbeamercolor{frametitle}{bg=TUCgreen}
 %\setbeamercolor{headline}{bg=red}
@@ -54,14 +59,14 @@
   keywordstyle=\color{mygreen},       % keyword style
   language=c,                 % the language of the code
   otherkeywords={fn,mut,Vec,vec!,let,i32,in},           % if you want to add more keywords to the set
-  %numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
-  %numbersep=5pt,                   % how far the line-numbers are from the code
-  %numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=3pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
   rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
   showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
   showstringspaces=false,          % underline spaces within strings only
   showtabs=false,                  % show tabs within strings adding particular underscores
-  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
   stringstyle=\color{mymauve},     % string literal style
   tabsize=2,	                   % sets default tabsize to 2 spaces
   title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
@@ -92,9 +97,9 @@
 	\end{minipage}
 \end{textblock*}}
 
-%\begin{frame}
-%\tableofcontents
-%\end{frame}
+\begin{frame}{Inhalt}
+\tableofcontents
+\end{frame}
 
 %\begin{frame}{Title}
 %	Inhalt
@@ -115,35 +120,39 @@
 %\end{alertblock}
 %\end{frame}
 
-\begin{frame}{Rust - Historie}
+\section{Entwicklungsgeschichte}
+
+\begin{frame}{Entwicklungsgeschichte}
 	\begin{itemize}
-	  \item 
-	  \item 
-	  \item
-	  \item 
-	 \end{itemize}
+	  \item 2006 persönliches Projekt von Graydon Hoare
+	  \item ab 2009 Projekt bei Mozilla
+	  \item 15. Mai 2015 Veröffentlichung der Version 1.0
+	  \item[]
+	  \item Entwicklung einer neuen Browserenging $\rightarrow$ Servo
+	 \end{itemize}	 
 \end{frame}
+
+\section{Warum Rust?}
 
 \begin{frame}{Warum Rust?}
 	\begin{itemize}
-	  \item Entwicklung einer neuen Browserenging $\rightarrow$ Servo
-	  \begin{itemize}
-	  	\item bessere Performance als alle anderen
-	    \item legacy code 
-	  \end{itemize}
+	  \item Warum nicht C\texttt{++} oder Java?
 	  \item[]
-	  \item Warum nicht C++ oder Java?
-	  \item[]
-	  \item Neue Sprache
+	  \item Rust
 	  \begin{itemize}
 	      \item schnell
-	      \item sicher
 	      \item Kontrolle über das System
+	      \begin{itemize}
+	          \item minmale Runtime
+	          \item keine Garbage Collection
+	      \end{itemize}
+	      \item sicher	      
 	      \item Features von höheren- und funktionalen Programmiersprachen
 	  \end{itemize}
-	  \item[$\rightarrow$] Rust
 	  \end{itemize}
 \end{frame}
+
+\section{Was macht Rust sicher?}
 
 \begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
 	\begin{itemize}
@@ -155,25 +164,30 @@
 	        \item jede Ressource hat genau einen Besitzer
 	    \end{itemize}    
 	\end{itemize}
-\begin{minipage}[t]{.49\textwidth}
+\begin{center}
+\hspace{3pt}
+\begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
 fn foo() {	
 	let mut y: Vec<i32> 
 		= Vec::new();
+		
 	y.push(4);	
 	bar(y);	
 	y.push(5); // Compiler Error	
 }
 \end{lstlisting}				
 \end{minipage}
-\hfill
-\begin{minipage}[t]{.49\textwidth}
+%\hfill
+\hspace{3pt}
+\begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
 fn foo(x: Vec<i32>) {	
 	...
 }
 \end{lstlisting}				
 \end{minipage}
+\end{center}
 \end{frame}
 
 \begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
@@ -185,19 +199,22 @@ fn foo(x: Vec<i32>) {
 	    \item[]
 	    \item shared borrow  
 	\end{itemize}
-\begin{minipage}[t]{.49\textwidth}
+\begin{center}
+\hspace{3pt}
+\begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
 fn foo() {	
 	let mut y: Vec<i32> 
 		= Vec::new();
+		
 	y.push(4);	
 	bar(&y);	
 	y.push(5);	
 }
 \end{lstlisting}				
 \end{minipage}
-\hfill
-\begin{minipage}[t]{.49\textwidth}
+\hspace{3pt}
+\begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
 fn bar(x: &Vec<i32>){
 	println!("{}",x[0]);  // Ok	
@@ -205,48 +222,57 @@ fn bar(x: &Vec<i32>){
 }
 \end{lstlisting}				
 \end{minipage}
+\end{center}
 \end{frame}
 
 
 \begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
 	\begin{itemize}
-	    \item mutabl borrow  
+	    \item mutable borrow  
 	    \begin{itemize}
 	        \item nur eine Referenz auf eine Ressource und diese hat nur einen Besitzer
 	    \end{itemize}
 	\end{itemize}
-\begin{minipage}[t]{.49\textwidth}
+\begin{center}
+\hspace{3pt}
+\begin{minipage}[t]{.48\textwidth}
 \begin{lstlisting}
 fn foo() {	
-	let y = vec![1, 2, 3, 4, 5];
+	let mut y 
+		= vec![1, 2, 3, 4, 5];
 	let mut v: Vec<i32> 
 		= Vec::new();
+		
 	bar(&y, &mut v); // Ok
 	bar(&y, &mut y); 
 		// Compiler Error
 }
 \end{lstlisting}				
 \end{minipage}
-\hfill
-\begin{minipage}[t]{.49\textwidth}
+\hspace{3pt}
+\begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
 fn bar(x: &Vec<i32>, 
 		y: &mut Vec<i32>){
+	
 	for v in x{
 		y.push(*v);
 	}
 }
 \end{lstlisting}				
 \end{minipage}
+\end{center}
 \end{frame}
 
 \begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
 \begin{itemize}
     \item Aliasing und Mutation zur gleichen Zeit wird verhindert
-   	\item Bsp. C++   	
+   	\item Bsp. C\texttt{++}   	
 \end{itemize}
-\begin{minipage}[t]{.49\textwidth}
-\begin{lstlisting}
+\begin{center}
+\hspace{3pt}
+\begin{minipage}[t]{.47\textwidth}
+\begin{lstlisting}[language=C++,otherkeywords={}]
 void foo(){ 
 	int *y = new int[10];	
 	for(int i=0;i<10;i++)
@@ -259,9 +285,9 @@ void foo(){
 }
 \end{lstlisting}				
 \end{minipage}
-\hfill
-\begin{minipage}[t]{.49\textwidth}
-\begin{lstlisting}
+\hspace{3pt}
+\begin{minipage}[t]{.47\textwidth}
+\begin{lstlisting}[language=C++,otherkeywords={}]
 int* bar(int *v){
 	delete[] v;	
 	v = new int[5]	
@@ -271,16 +297,32 @@ int* bar(int *v){
 	return v;
 }
 \end{lstlisting}				
-\end{minipage}\\
+\end{minipage}
+\end{center}
 \end{frame}
+
+\section{Are we Web yet?}
 
 \begin{frame}{Are we Web yet?}
 Bild http://arewewebyet.com/
 \end{frame}
 
+\section{Iron}
 \begin{frame}{Iron}
+\begin{itemize}
+    \item Webframework
+    \item basiert auf Hyper
+    \item hochgradig Nebenläufig
+    \item keine unnötigen Features im Basisframework, aber leicht erweiterbar
+    \item bietet Infrastruktur, um das Framework an individuelle Bedürfnisse anzupassen
+\end{itemize}
 
 \end{frame}
 
+
+\section{Demo}
+\begin{frame}{Demo}
+
+\end{frame}
 
 \end{document}
