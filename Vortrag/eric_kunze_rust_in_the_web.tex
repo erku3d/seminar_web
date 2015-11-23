@@ -1,0 +1,286 @@
+\documentclass[12pt]{beamer}
+
+\usepackage{color}
+\definecolor{TUCgreen}{HTML}{779a2b}
+
+\usetheme{Madrid}
+\usecolortheme[named=TUCgreen]{structure}
+%\usecolortheme{lily}	% Farbtheme
+
+
+%\setbeamercolor{frametitle}{bg=TUCgreen}
+%\setbeamercolor{headline}{bg=red}
+
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\author[Eric Kunze]{Eric Kunze}
+%\title{\includegraphics[height=2cm]{Rust_Logo.eps}\\Rust in the Web}
+\title[]{Rust in the Web}
+%\setbeamercovered{transparent} 
+\setbeamertemplate{navigation symbols}{} 
+%\logo{\includegraphics[height=1cm]{Rust_Logo.eps}} 
+%\institute{TU Chemnitz} 
+\date{04.11.2015} 
+\date{} 
+%\subject{Zwischenvortrag} 
+
+\usepackage{textpos}
+
+\usepackage{listings}
+
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\lstset{ %
+  backgroundcolor=\color{lightgray!50},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\scriptsize,        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{orange},    % comment style
+  deletekeywords={...},            % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  %frame=single,	                   % adds a frame around the code
+  keepspaces=false,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{mygreen},       % keyword style
+  language=c,                 % the language of the code
+  otherkeywords={fn,mut,Vec,vec!,let,i32,in},           % if you want to add more keywords to the set
+  %numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  %numbersep=5pt,                   % how far the line-numbers are from the code
+  %numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+
+
+
+
+\begin{document}
+
+\begin{frame}{\centerline{Seminar Web Engineering}}
+	\begin{center}
+		\includegraphics[height=3cm]{Rust_Logo.eps}\\~\\
+		\Large \textbf{Rust in the Web}\\~\\
+		\normalsize Eric Kunze
+	\end{center}
+ \end{frame}
+ 
+
+\addtobeamertemplate{frametitle}{}{%
+\begin{textblock*}{10cm}(.74\textwidth,-.95cm)
+	\begin{minipage}[c]{0.24\textwidth}
+		\footnotesize Rust in the Web 
+	\end{minipage}
+	\begin{minipage}[c]{0.2\textwidth}
+		\includegraphics[height=.8cm]{Rust_Logo.eps}
+	\end{minipage}
+\end{textblock*}}
+
+%\begin{frame}
+%\tableofcontents
+%\end{frame}
+
+%\begin{frame}{Title}
+%	Inhalt
+%	\begin{itemize}
+%	  \item Test
+%	  \item Test
+%	\end{itemize}
+%\begin{block}{Blocktitel}		% normaler Block
+%	 Blockinhalt
+%\end{block}
+% 
+%\begin{exampleblock}{Blocktitel}	% Beispielblock
+%	 Blockinhalt
+%\end{exampleblock}
+% 
+%\begin{alertblock}{Blocktitel}		% Warnblock
+%	 Blockinhalt
+%\end{alertblock}
+%\end{frame}
+
+\begin{frame}{Rust - Historie}
+	\begin{itemize}
+	  \item 
+	  \item 
+	  \item
+	  \item 
+	 \end{itemize}
+\end{frame}
+
+\begin{frame}{Warum Rust?}
+	\begin{itemize}
+	  \item Entwicklung einer neuen Browserenging $\rightarrow$ Servo
+	  \begin{itemize}
+	  	\item bessere Performance als alle anderen
+	    \item legacy code 
+	  \end{itemize}
+	  \item[]
+	  \item Warum nicht C++ oder Java?
+	  \item[]
+	  \item Neue Sprache
+	  \begin{itemize}
+	      \item schnell
+	      \item sicher
+	      \item Kontrolle über das System
+	      \item Features von höheren- und funktionalen Programmiersprachen
+	  \end{itemize}
+	  \item[$\rightarrow$] Rust
+	  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
+	\begin{itemize}
+	    \item Ownership and Borrowing
+	\end{itemize}
+	\begin{itemize}
+	    \item Ownership
+	    \begin{itemize}
+	        \item jede Ressource hat genau einen Besitzer
+	    \end{itemize}    
+	\end{itemize}
+\begin{minipage}[t]{.49\textwidth}
+\begin{lstlisting}
+fn foo() {	
+	let mut y: Vec<i32> 
+		= Vec::new();
+	y.push(4);	
+	bar(y);	
+	y.push(5); // Compiler Error	
+}
+\end{lstlisting}				
+\end{minipage}
+\hfill
+\begin{minipage}[t]{.49\textwidth}
+\begin{lstlisting}
+fn foo(x: Vec<i32>) {	
+	...
+}
+\end{lstlisting}				
+\end{minipage}
+\end{frame}
+
+\begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
+	\begin{itemize}
+	    \item Borrowing
+	    \begin{itemize}
+	        \item jede Ressource kann verliehen werden
+	    \end{itemize}
+	    \item[]
+	    \item shared borrow  
+	\end{itemize}
+\begin{minipage}[t]{.49\textwidth}
+\begin{lstlisting}
+fn foo() {	
+	let mut y: Vec<i32> 
+		= Vec::new();
+	y.push(4);	
+	bar(&y);	
+	y.push(5);	
+}
+\end{lstlisting}				
+\end{minipage}
+\hfill
+\begin{minipage}[t]{.49\textwidth}
+\begin{lstlisting}
+fn bar(x: &Vec<i32>){
+	println!("{}",x[0]);  // Ok	
+	x.push(1); // Compiler Error
+}
+\end{lstlisting}				
+\end{minipage}
+\end{frame}
+
+
+\begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
+	\begin{itemize}
+	    \item mutabl borrow  
+	    \begin{itemize}
+	        \item nur eine Referenz auf eine Ressource und diese hat nur einen Besitzer
+	    \end{itemize}
+	\end{itemize}
+\begin{minipage}[t]{.49\textwidth}
+\begin{lstlisting}
+fn foo() {	
+	let y = vec![1, 2, 3, 4, 5];
+	let mut v: Vec<i32> 
+		= Vec::new();
+	bar(&y, &mut v); // Ok
+	bar(&y, &mut y); 
+		// Compiler Error
+}
+\end{lstlisting}				
+\end{minipage}
+\hfill
+\begin{minipage}[t]{.49\textwidth}
+\begin{lstlisting}
+fn bar(x: &Vec<i32>, 
+		y: &mut Vec<i32>){
+	for v in x{
+		y.push(*v);
+	}
+}
+\end{lstlisting}				
+\end{minipage}
+\end{frame}
+
+\begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
+\begin{itemize}
+    \item Aliasing und Mutation zur gleichen Zeit wird verhindert
+   	\item Bsp. C++   	
+\end{itemize}
+\begin{minipage}[t]{.49\textwidth}
+\begin{lstlisting}
+void foo(){ 
+	int *y = new int[10];	
+	for(int i=0;i<10;i++)
+		y[i] = i;
+
+	int *x = &y[9];
+	y=bar(y);	
+	delete[] y;		
+	cout<<*x<<endl;
+}
+\end{lstlisting}				
+\end{minipage}
+\hfill
+\begin{minipage}[t]{.49\textwidth}
+\begin{lstlisting}
+int* bar(int *v){
+	delete[] v;	
+	v = new int[5]	
+	for(int i=0;i<10;i++){
+		v[i] = i*2;
+	}	
+	return v;
+}
+\end{lstlisting}				
+\end{minipage}\\
+\end{frame}
+
+\begin{frame}{Are we Web yet?}
+Bild http://arewewebyet.com/
+\end{frame}
+
+\begin{frame}{Iron}
+
+\end{frame}
+
+
+\end{document}
