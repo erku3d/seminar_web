@@ -1,4 +1,4 @@
-\documentclass[12pt]{beamer}
+\documentclass{beamer}
 
 \usepackage{color}
 \definecolor{TUCgreen}{HTML}{779a2b}
@@ -48,7 +48,7 @@
   backgroundcolor=\color{lightgray!50},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
   basicstyle=\scriptsize,        % the size of the fonts that are used for the code
   breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
-  breaklines=true,                 % sets automatic line breaking
+  %breaklines=true,                 % sets automatic line breaking
   captionpos=b,                    % sets the caption-position to bottom
   commentstyle=\color{orange},    % comment style
   deletekeywords={...},            % if you want to delete keywords from the given language
@@ -74,6 +74,8 @@
 
 
 \usepackage{multirow}
+\usepackage{setspace}
+
 
 
 \begin{document}
@@ -98,7 +100,9 @@
 \end{textblock*}}
 
 \begin{frame}{Inhalt}
+
 \tableofcontents
+
 \end{frame}
 
 %\begin{frame}{Title}
@@ -120,48 +124,58 @@
 %\end{alertblock}
 %\end{frame}
 
-\section{Entwicklungsgeschichte}
+\section{Entstehungsgeschichte}
 
-\begin{frame}{Entwicklungsgeschichte}
+\begin{frame}{Entstehungsgeschichte}
 	\begin{itemize}
 	  \item 2006 persönliches Projekt von Graydon Hoare
 	  \item ab 2009 Projekt bei Mozilla
 	  \item 15. Mai 2015 Veröffentlichung der Version 1.0
+	  \pause
 	  \item[]
 	  \item Entwicklung einer neuen Browserenging $\rightarrow$ Servo
+	  \pause
+	  \begin{itemize}
+		\item Warum nicht C\texttt{++} oder Java?
+	  \end{itemize}
 	 \end{itemize}	 
 \end{frame}
 
-\section{Warum Rust?}
-
-\begin{frame}{Warum Rust?}
-	\begin{itemize}
-	  \item Warum nicht C\texttt{++} oder Java?
-	  \item[]
-	  \item Rust
+%\section{Was unterscheidet Rust von anderen Programmiersprachen?}
+\section{Ziele von Rust}
+\begin{frame}{Ziele von Rust}
+Rust: Safe System Programming
 	  \begin{itemize}
-	      \item schnell
-	      \item Kontrolle über das System
+	  	  \pause
+	      \item Performance
+	      \pause
+	      \item Kontrolle 
 	      \begin{itemize}
 	          \item minmale Runtime
 	          \item keine Garbage Collection
 	      \end{itemize}
-	      \item sicher	      
-	      \item Features von höheren- und funktionalen Programmiersprachen
-	  \end{itemize}
+	      \pause
+	      \item Sicherheit      
+	      \pause
+	      \item Features von höheren und funktionalen Programmiersprachen
+	      \begin{itemize}
+	        \item Pattern Matching
+	        \item Traits
+	        \item Closures
+	      \end{itemize}
 	  \end{itemize}
 \end{frame}
 
-\section{Was macht Rust sicher?}
+\section{Ownership and Borrowing}
 
-\begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
+\begin{frame}[fragile]{Ownership and Borrowing}
 	\begin{itemize}
-	    \item Ownership and Borrowing
-	\end{itemize}
-	\begin{itemize}
+	\pause
 	    \item Ownership
 	    \begin{itemize}
-	        \item jede Ressource hat genau einen Besitzer
+	        \item jede Ressource hat zu einem Zeitpunkt \textbf{genau einen} Besitzer
+	        \item Ressourcen können den Besitzer wechseln
+	        \pause
 	    \end{itemize}    
 	\end{itemize}
 \begin{center}
@@ -169,12 +183,12 @@
 \begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
 fn foo() {	
-	let mut y: Vec<i32> 
-		= Vec::new();
+  let mut y: Vec<i32> 
+      = Vec::new();
 		
-	y.push(4);	
-	bar(y);	
-	y.push(5); // Compiler Error	
+  y.push(4);	
+  bar(y);	
+  y.push(5); // Compiler Error	
 }
 \end{lstlisting}				
 \end{minipage}
@@ -183,33 +197,39 @@ fn foo() {
 \begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
 fn bar(x: Vec<i32>) {	
-	...
+  ...
 }
 \end{lstlisting}				
 \end{minipage}
 \end{center}
 \end{frame}
 
-\begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
+\begin{frame}[fragile]{Ownership and Borrowing}
 	\begin{itemize}
 	    \item Borrowing
 	    \begin{itemize}
-	        \item jede Ressource kann verliehen werden
+	        \item Ownership kann verliehen werden
 	    \end{itemize}
 	    \item[]
+	    \pause
 	    \item shared borrow  
+	    \begin{itemize}
+	      \item die Referenz ist \textbf{unveränderlich}
+	      \item die Ressource kann mehrfach verliehen werden
+	      \pause
+	    \end{itemize}
 	\end{itemize}
 \begin{center}
 \hspace{3pt}
 \begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
 fn foo() {	
-	let mut y: Vec<i32> 
-		= Vec::new();
+  let mut y: Vec<i32> 
+      = Vec::new();
 		
-	y.push(4);	
-	bar(&y);	
-	y.push(5);	
+  y.push(4);	
+  bar(&y);	
+  y.push(5); // Ok
 }
 \end{lstlisting}				
 \end{minipage}
@@ -217,8 +237,11 @@ fn foo() {
 \begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
 fn bar(x: &Vec<i32>){
-	println!("{}",x[0]);  // Ok	
-	x.push(1); // Compiler Error
+  ...	
+  b = a + x[0];  // Ok	
+	
+  x.push(1); // Compiler Error
+	
 }
 \end{lstlisting}				
 \end{minipage}
@@ -226,11 +249,13 @@ fn bar(x: &Vec<i32>){
 \end{frame}
 
 
-\begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
+\begin{frame}[fragile]{Ownership and Borrowing}
 	\begin{itemize}
 	    \item mutable borrow  
 	    \begin{itemize}
-	        \item nur eine Referenz auf eine Ressource und diese hat nur einen Besitzer
+	        \item zu einem Zeitpunkt darf \textbf{nur eine} Referenz existieren      
+	        \item der Besitzer dieser Referenz kann die Ressource \textbf{verändern}
+	        \pause
 	    \end{itemize}
 	\end{itemize}
 \begin{center}
@@ -238,14 +263,14 @@ fn bar(x: &Vec<i32>){
 \begin{minipage}[t]{.48\textwidth}
 \begin{lstlisting}
 fn foo() {	
-	let mut y 
-		= vec![1, 2, 3, 4, 5];
-	let mut x: Vec<i32> 
-		= Vec::new();
+  let mut y 
+      = vec![1,2,3,4,5];
+  let mut x: Vec<i32> 
+      = Vec::new();
 		
-	bar(&y, &mut x); // Ok
-	bar(&y, &mut y); 
-		// Compiler Error
+  bar(&y, &mut x); // Ok
+  bar(&y, &mut y); 
+      // Compiler Error
 }
 \end{lstlisting}				
 \end{minipage}
@@ -253,53 +278,82 @@ fn foo() {
 \begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
 fn bar(y: &Vec<i32>, 
-		   x: &mut Vec<i32>){
+       x: &mut Vec<i32>){
 	
-	for v in y{
-		x.push(*v);
-	}
+  for v in y{
+    x.push(*v);
+  }
 }
 \end{lstlisting}				
 \end{minipage}
 \end{center}
 \end{frame}
 
-\begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
+\section{Vor- und Nachteile von Rust}
+
+\begin{frame}{Vor- und Nachteile von Rust}
+\pause
+\begin{minipage}[t]{.45\textwidth}
+Vorteile
 \begin{itemize}
-    \item Aliasing und Mutation zur gleichen Zeit wird verhindert
-   	\item Bsp. C\texttt{++}   	
+  \item Sicherheit und Geschwindigkeit
+  \item Tools
+  \begin{itemize}
+    \item Cargo
+    \item rustdoc
+  \end{itemize}
+  \item Open Source Projekte \\ crates.io
 \end{itemize}
-\begin{center}
-\hspace{3pt}
-\begin{minipage}[t]{.47\textwidth}
-\begin{lstlisting}[language=C++,otherkeywords={}]
-void foo(){ 
-	int *y = new int[10];	
-	for(int i=0;i<10;i++)
-		y[i] = i;
-
-	int *x = &y[9];
-	y=bar(y);	
-	delete[] y;		
-	cout<<*x<<endl;
-}
-\end{lstlisting}				
 \end{minipage}
-\hspace{3pt}
-\begin{minipage}[t]{.47\textwidth}
-\begin{lstlisting}[language=C++,otherkeywords={}]
-int* bar(int *v){
-	delete[] v;	
-	v = new int[5]	
-	for(int i=0;i<10;i++){
-		v[i] = i*2;
-	}	
-	return v;
-}
-\end{lstlisting}				
+\hfill
+\begin{minipage}[t]{.45\textwidth}
+\pause
+Nachteile
+\begin{itemize}
+  \item sehr junge Sprache
+  \item häufige Änderungen 
+  \item Dokumentation   
+  \item (Kompilierzeit)
+\end{itemize}
 \end{minipage}
-\end{center}
 \end{frame}
+
+%\begin{frame}[fragile=singleslide]{Was macht Rust sicher?}
+%\begin{itemize}
+%    \item Aliasing und Mutation zur gleichen Zeit wird verhindert
+%   	\item Bsp. C\texttt{++}   	
+%\end{itemize}
+%\begin{center}
+%\hspace{3pt}
+%\begin{minipage}[t]{.47\textwidth}
+%\begin{lstlisting}[language=C++,otherkeywords={}]
+%void foo(){ 
+%	int *y = new int[10];	
+%	for(int i=0;i<10;i++)
+%		y[i] = i;
+%
+%	int *x = &y[9];
+%	y=bar(y);	
+%	delete[] y;		
+%	cout<<*x<<endl;
+%}
+%\end{lstlisting}				
+%\end{minipage}
+%\hspace{3pt}
+%\begin{minipage}[t]{.47\textwidth}
+%\begin{lstlisting}[language=C++,otherkeywords={}]
+%int* bar(int *v){
+%	delete[] v;	
+%	v = new int[5]	
+%	for(int i=0;i<10;i++){
+%		v[i] = i*2;
+%	}	
+%	return v;
+%}
+%\end{lstlisting}				
+%\end{minipage}
+%\end{center}
+%\end{frame}
 
 \section{Rust in the Web}
 
@@ -322,6 +376,7 @@ int* bar(int *v){
   \item Database drivers
   \begin{itemize}
     \item rust-postgres
+    \item rusqlite
     \item redis-rs
   \end{itemize}
 \end{itemize}
@@ -332,7 +387,6 @@ int* bar(int *v){
 \item Frameworks
   \begin{itemize}
     \item Iron
-    \item Conduit
     \item rustful
     \item Nickel
   \end{itemize}  
@@ -347,7 +401,7 @@ int* bar(int *v){
     \item Webframework
     \item basiert auf Hyper
     \item hochgradig Nebenläufig
-    \item keine unnötigen Features im Basisframework, aber leicht erweiterbar
+    \item Basisframework ist leicht erweiterbar
     \item bietet Infrastruktur, um das Framework an individuelle Bedürfnisse anzupassen
 \end{itemize}
 
