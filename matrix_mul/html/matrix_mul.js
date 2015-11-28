@@ -1,10 +1,11 @@
 
 function getMatrixObject(rows,cols,elem){
-    return {
+    var mat = {
         rows:rows,
         cols:cols,
         elem:elem
     }
+    return mat;
 }
 
 function textareaToMatrix(id){
@@ -24,7 +25,7 @@ function textareaToMatrix(id){
     var mat = [];
     var c_cols; //Anzahl der Spalten
 
-    for (i = 0; i < rows.length; i++){
+    for (var i = 0; i < rows.length; i++){
 
         //in jeder Zeile sind die einzelnen Werte durch "," getrennt
         var row = rows[i].split(",");
@@ -38,7 +39,7 @@ function textareaToMatrix(id){
             }
         }
         //entfernt Leerzeichen etc. von den einzelnen Elementen
-        for(j=0; j<row.length; j++){
+        for(var j=0; j<row.length; j++){
             if(row[j].indexOf('.') > -1 || isNaN(row[j])) //falls keine Zahl
                 throw "Not an Integer";
 
@@ -100,69 +101,89 @@ function sendRequest(){
         }
     }
 
+    //erzeuge http request body
 
+    var body = '{"mat_a": ' + JSON.stringify(mat_A) + ',' + '"mat_b": ' + JSON.stringify(mat_B) +'}';
 
-    var op = document.getElementById("operation").value;
+    var xhttp = new XMLHttpRequest();
 
-    if(op == "add" || op == "diff"){
-        //addition, subtraktion -> A und B gleiche größe
-        if((mat_A.rows != mat_B.rows) || (mat_A.cols != mat_B.cols)){
-            alert("Beide Matrizen müssen dieselbe größe haben.");
-            return;
-        }
-    } else { //mul
-        //Mulltipikation ->  #spalten A = #Zeilen B
-        if(mat_A.cols != mat_B.rows){
-            alert("Spaltenanzhal von A muss gleich der Zeilenanzahl von B sein");
-            return;
+    xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+            showResult(xhttp.responseText);
+        } else if ( xhttp.readyState == 4 && xhttp.status != 200){
+            alert("Fehler! "+xhttp.statusText+"\n"+xhttp.responseText+"\n"+ xhttp.status);
         }
     }
 
-    //erzeuge http request body
+    xhttp.open("POST", "index.html", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(body); //sendet Text im Body
 
-    var body = '{"operation":"'+op+'",';
-    body = body + '"mat_a": ' + JSON.stringify(mat_A) +',';
-    body = body + '"mat_b": ' + JSON.stringify(mat_B) +'}';
-
-    //alert(body);
-
-
-    var xhttp = new XMLHttpRequest();
-      xhttp.onreadystatechange = function() {
-        if (xhttp.readyState == 4 && xhttp.status == 200) {
-          showResult(xhttp.responseText);
-        } else if ( xhttp.readyState == 4 && xhttp.status != 200){
-          alert("Fehler! "+xhttp.statusText+"\n"+xhttp.responseText);
-        }
-      }
-
-      xhttp.open("POST", "index.html", true);
-      xhttp.setRequestHeader("Content-type", "application/json");
-      xhttp.send(body); //sendet Text im Body
-
-      document.getElementById("mat_C").value = "Matrix wird berechnet ...";
+    document.getElementById("mat_add").value = "Matrix wird berechnet ...";
+    document.getElementById("mat_mul").value = "Matrix wird berechnet ...";
 
 }
 
-function showResult(resp){
-    var mat = JSON.parse(resp);
+function myMatrixToString(mat){
 
-    //alert(mat.rows + "\n" + mat.cols +"\n"+ mat.elem);
+    if(mat.elem.length < 1)
+        throw "empty"
 
-    var val = mat.elem[0];
+    var str = mat.elem[0];
 
-    for(i=1; i<mat.elem.length; i++){
-
-        if(i % mat.cols == 0)
-            val = val + "\n";
-        else
-            val = val + ",";
-
-        val = val + mat.elem[i];
+    if (str < 10){
+        str = '  '+str;
+    }
+    else if (str < 100){
+        str = ' '+str;
     }
 
-    //alert(val);
-    document.getElementById("mat_C").value = val;
+    for(var i=1; i<mat.elem.length; i++){
+
+        if(i % mat.cols == 0)
+            str = str + "\n";
+        else
+            str = str + ",";
+
+        var el = mat.elem[i];
+
+        if (el < 10){
+            el = '  '+el;
+        }
+        else if (el < 100){
+            el = ' '+el;
+        }
+
+        str = str + el;
+    }
+
+    return str;
+}
+
+
+function showResult(resp){
+
+    var body = JSON.parse(resp);
+
+    alert(resp);
+
+    try{
+        document.getElementById("mat_add").wrap="off";
+        document.getElementById("mat_add").value = myMatrixToString(body.mat_a);
+    }
+    catch(err){
+        document.getElementById("mat_add").wrap="hard";
+        document.getElementById("mat_add").value = body.message;
+    }
+
+    try{
+        document.getElementById("mat_mul").wrap="off";
+        document.getElementById("mat_mul").value = myMatrixToString(body.mat_b);
+    }
+    catch(err){
+        document.getElementById("mat_mul").wrap="hard";
+        document.getElementById("mat_mul").value = body.message;
+    }
 
 }
 
@@ -170,16 +191,27 @@ function clearTextArea(){
 
 	document.getElementById("mat_A").value = "";
 	document.getElementById("mat_B").value = "";
-	document.getElementById("mat_C").value = "";
-	document.getElementById("mat_A").focus();
+	document.getElementById("mat_add").value = "";
+	document.getElementById("mat_mul").value = "";
+
+    document.getElementById("a_r").value = "";
+    document.getElementById("a_c").value = "";
+
+    document.getElementById("b_r").value = "";
+    document.getElementById("b_c").value = "";
+
+    document.getElementById("mat_A").focus();
 }
 
 function getRandMat(r,c){
     var s = "";
 
-    for(i=0;i<r;i++){
-		for(j=0;j<c;j++){
+    for(var i=0;i<r;i++){
+		for(var j=0;j<c;j++){
 			var randInt = Math.floor((Math.random() * 10) + 1);
+
+            if(randInt < 10)
+                randInt = " "+randInt
 
 			if(j>0)
 				s = s + "," + randInt;

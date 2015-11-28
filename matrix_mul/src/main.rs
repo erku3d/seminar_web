@@ -13,8 +13,10 @@ use iron::prelude::*;
 use std::fs::File;
 use std::path::Path;
 use std::error::Error;
-use std::io::prelude::*;
 
+
+use std::thread;
+use std::sync::Arc;
 
 #[derive(Debug, Clone, RustcDecodable, RustcEncodable)] // Automatically generate trait implementations
 /// Matrix, deren Elemente alle Zeilenweise als Vektor vorliegen
@@ -27,9 +29,9 @@ pub struct MyMatrix{
     pub elem: Vec<i32>,
 }
 /// Struct in den das übermittelte JSON geparsed wird
-#[derive(Debug, Clone, RustcDecodable)]
+#[derive(Debug, Clone, RustcDecodable, RustcEncodable)]
 pub struct MyBody{
-    operation: Option<String>,
+    message: Option<String>,
     mat_a: MyMatrix,
     mat_b: MyMatrix,
 }
@@ -37,7 +39,7 @@ pub struct MyBody{
 /// Erzeugt eine HTTP-Response auf eine Anfrage ohne Body. (GET Request)
 ///
 /// Die Übergebenen Anfrage wird ausgewertet und die angegebene Datei (falls diese exisitiert) in eine Response gepackt.
-/// Wird eine Datei nicht gefunden, so wird ein entsprechender HTTP-Statuscode in die Response gepackt.
+/// Wird eine Datei nicht gefunden, so wird ein entsprechender HTTP-Statuscode als Response zurück gegeben.
 ///
 /// # Argumente
 ///
@@ -56,7 +58,7 @@ pub fn get_response(req: &Request) -> Response{
 
     //versuche die Datei zu öffnen
     //falls unbekannt gib 404 als Response
-    let mut file = match File::open(&path) {
+    let file = match File::open(&path) {
         Err(why) => {
             println!("Die Datei {} konnte nicht geöffnet werden.\n {}", display, Error::description(&why));
             return Response::with((status::NotFound, "Seite nicht gefunden!"))
@@ -64,84 +66,94 @@ pub fn get_response(req: &Request) -> Response{
         Ok(file) => file //fals erfolgreich, gib die Datei zurück
     };
 
-    let mut s = String::new();
-
-    //den Inhalt der Datei in einen String umwandeln und falls erfolgreich Response erzeugen
-    let mut res = match file.read_to_string(&mut s) {
-        Err(why) => panic!("Datei {} konnte nicht gelesen werden.\n {}", display,
-                                                   Error::description(&why)),
-        Ok(_) => Response::with((status::Ok,s)),
-    };
+    //Response mit Datei
+    let mut res = Response::with((status::Ok,file));
 
     //Dateiendung
     let extension = path.extension().unwrap().to_str().unwrap();
 
-    //content-type auf Basis der Dateiendung setzen
+    //content-type auf Basis der Dateiendung setzen und Response zurückgeben
 
     match extension{
         "css" => {res.headers.set_raw("content-type", vec![b"text/css".to_vec()]); res},
         "js" => {res.headers.set_raw("content-type", vec![b"text/javascript".to_vec()]); res},
+        "png" => {res.headers.set_raw("content-type", vec![b"image/png".to_vec()]); res},
         _ => {res.headers.set_raw("content-type", vec![b"text/html".to_vec()]); res},
     }
-    //println!("status: {:?}",res.status);
-    //println!("headers: {:?}",res.headers);
-
-
-    //return res;
 }
 
 /// Erzeugt eine HTTP-Response auf eine Anfrage mit Body. (POST Request)
 ///
 /// Wertet den übergeben Body aus und ruft die entsprechenden Methoden zur Berechnung der Ergebnissmatrix auf
-/// Die Ergebnissmatrix wird anschließend in JSON codiert und in eine Response gepackt. Tritt ein Fehler auf, so wird ein
-/// entsprechender Fehlercode in die Response gepackt.
+/// Die Ergebnissmatrizen werden anschließend in JSON codiert und in eine Response gepackt. Tritt ein Fehler auf, so wird ein
+/// entsprechender Fehlercode im Feld 'message' gepackt.
 ///
 /// # Argumente
 ///
 /// * `body` - der in den Struct `MyBody` geparste Body des Requests
 pub fn post_response(body: &MyBody) -> Response{
 
-    let mat_c = match body.operation{ //erzeugt Option<Vec<i32>> falls eine Matrix erzeugt wurde
-        Some(ref op) => { //ref op -> Pointer auf den Wert von op
-            match &op[..]{ //Welche Operation soll ausgeführt werden
-                "add" => { //Addition
-                     match vector_add(&body.mat_a.elem, //Matrixaddition
-                                     &body.mat_b.elem)
-                    {
-                        Some(c) => Some( MyMatrix{    //Falls erfolgreich Struct anlegen
-                                            rows: body.mat_a.rows,
-                                            cols: body.mat_a.cols,
-                                            elem: c }),
-                        None => {println!("Matrizen haben nicht die gleiche Größe"); None}
-                    }
-                },
+    let body_arc =  Arc::new(body.clone()); //mehrer Threads sollen auf den body zugreifen
 
-                "mull" => {
-                    match matrix_mul(&body.mat_a.elem, //Matrixmultiplikation
-                                     &body.mat_b.elem,
-                                     body.mat_a.rows as usize,
-                                     body.mat_a.cols as usize,
-                                     body.mat_b.cols as usize)
-                    {
-                        Some(c) => Some( MyMatrix{                  //Falls erfolgreich Struct anlegen
-                                            rows: body.mat_a.rows,
-                                            cols: body.mat_b.cols,
-                                            elem: c}),
-                        None => {println!("Matrizen sind falsch dimensioniert für Multiplikation"); None}
-                    }
-                },
-                _ => {println!("Operation existiert nicht"); None}
-            }
-        }
-        None => {println!("keine Operation angegeben"); None},
+    let body_ref_for_add = body_arc.clone(); //neue Referenz auf den Body
+
+    let handle_add = thread::spawn(move|| { //neuer Thread
+        vector_add(&body_ref_for_add.mat_a.elem, &body_ref_for_add.mat_b.elem)//Matrixaddition
+    });
+
+    let body_ref_for_mul = body_arc.clone(); //neue Referenz auf den Body
+
+    let handle_mul = thread::spawn(move|| { //neuer Thread
+        matrix_mul(&body_ref_for_mul.mat_a.elem, //Matrixmultiplikation
+                     &body_ref_for_mul.mat_b.elem,
+                     body_ref_for_mul.mat_a.rows as usize,
+                     body_ref_for_mul.mat_a.cols as usize,
+                     body_ref_for_mul.mat_b.cols as usize)
+    });
+
+    //Ergebnisse auswerten
+
+    let res_add = match handle_add.join(){ //warte bis Thread fertig
+        Ok(result) => match result {
+            Some(c) => Some(MyMatrix{    //Falls erfolgreich Struct anlegen
+                                rows: body.mat_a.rows,
+                                cols: body.mat_a.cols,
+                                elem: c }),
+            None => None // Matrizen haben nicht die gleiche Größe
+        },
+        Err(_) => {println!("Add ist abgestürtzt"); None}
     };
 
-    match mat_c{ // Falls Berechnung erfolgreich
-        Some(c) => {
-                Response::with((status::Ok, json::encode(&c).unwrap())) //Matrix als JSON codieren
-            },
-        None => {println!("Fehler"); Response::with((status::InternalServerError,"Operation konnten mit den Matrizen nicht ausgeführt werden"))}
-    }
+    let res_mul = match handle_mul.join(){
+        Ok(result) => match result {
+            Some(c) => Some(MyMatrix{
+                                rows: body.mat_a.rows,
+                                cols: body.mat_b.cols,
+                                elem: c}),
+            None => None //Matrizen sind falsch dimensioniert für Multiplikation
+        },
+        Err(_) => {println!("Mul ist abgestürtzt"); None}
+    };
+
+    //erzeugen von MyBody
+    let resp_body = match res_add{
+        Some(c_add) => {
+            match res_mul{
+                Some(c_mul) => MyBody{message: None, mat_a: c_add, mat_b: c_mul},
+                None => MyBody{message: Some("Matrizen sind falsch dimensioniert für Multiplikation!".to_string()), mat_a: c_add, mat_b: MyMatrix{rows:0,cols:0,elem: vec![]}}
+            }
+        }
+        None => {
+            match res_mul{
+                Some(c_mul) => MyBody{message: Some("Matrizen haben nicht die gleiche Größe!".to_string()), mat_a: MyMatrix{rows:0,cols:0,elem: vec![]}, mat_b: c_mul},
+                None => MyBody{message: Some("Matrix konnte nicht berechnet werden! Matrizen sind vermutlich falsch dimensioniert.".to_string()), mat_a: MyMatrix{rows:0,cols:0,elem: vec![]}, mat_b: MyMatrix{rows:0,cols:0,elem: vec![]}}
+            }
+        }
+    };
+
+    println!("{:?}",resp_body);
+
+    Response::with((status::Ok, json::encode(&resp_body).unwrap())) //Matrix als JSON codieren
 }
 
 /// Erhält den Request und erzeugt eine Response als IronResult<Response>.

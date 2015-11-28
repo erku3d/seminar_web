@@ -1,0 +1,7 @@
+[package]
+name = "mat_mul"
+version = "0.1.0"
+authors = ["Eric Kunze <eric.kunze@gmx.net>"]
+
+[dependencies]
+time = "*"

@@ -58,7 +58,7 @@
   keepspaces=false,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
   keywordstyle=\color{mygreen},       % keyword style
   language=c,                 % the language of the code
-  otherkeywords={fn,mut,Vec,vec!,let,i32,in},           % if you want to add more keywords to the set
+  otherkeywords={fn,mut,Vec,vec!,let,i32,in,println!},           % if you want to add more keywords to the set
   numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
   numbersep=3pt,                   % how far the line-numbers are from the code
   numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
@@ -73,7 +73,7 @@
 }
 
 
-
+\usepackage{multirow}
 
 
 \begin{document}
@@ -182,7 +182,7 @@ fn foo() {
 \hspace{3pt}
 \begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
-fn foo(x: Vec<i32>) {	
+fn bar(x: Vec<i32>) {	
 	...
 }
 \end{lstlisting}				
@@ -240,10 +240,10 @@ fn bar(x: &Vec<i32>){
 fn foo() {	
 	let mut y 
 		= vec![1, 2, 3, 4, 5];
-	let mut v: Vec<i32> 
+	let mut x: Vec<i32> 
 		= Vec::new();
 		
-	bar(&y, &mut v); // Ok
+	bar(&y, &mut x); // Ok
 	bar(&y, &mut y); 
 		// Compiler Error
 }
@@ -252,11 +252,11 @@ fn foo() {
 \hspace{3pt}
 \begin{minipage}[t]{.47\textwidth}
 \begin{lstlisting}
-fn bar(x: &Vec<i32>, 
-		y: &mut Vec<i32>){
+fn bar(y: &Vec<i32>, 
+		   x: &mut Vec<i32>){
 	
-	for v in x{
-		y.push(*v);
+	for v in y{
+		x.push(*v);
 	}
 }
 \end{lstlisting}				
@@ -301,10 +301,44 @@ int* bar(int *v){
 \end{center}
 \end{frame}
 
-\section{Are we Web yet?}
+\section{Rust in the Web}
 
-\begin{frame}{Are we Web yet?}
-Bild http://arewewebyet.com/
+\begin{frame}{Rust in the Web}
+
+\begin{minipage}[t]{.45\textwidth}
+\begin{itemize}
+  \item HTTP-Server
+  \begin{itemize}
+    \item Hyper
+    \item tiny-http
+  \end{itemize}
+  \item []
+  \item HTTP client
+  \begin{itemize}
+    \item Hyper
+    \item curl-rust
+  \end{itemize} 
+  \item []
+  \item Database drivers
+  \begin{itemize}
+    \item rust-postgres
+    \item redis-rs
+  \end{itemize}
+\end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{.45\textwidth}
+\begin{itemize}
+\item Frameworks
+  \begin{itemize}
+    \item Iron
+    \item Conduit
+    \item rustful
+    \item Nickel
+  \end{itemize}  
+\end{itemize}
+\end{minipage}
+
 \end{frame}
 
 \section{Iron}

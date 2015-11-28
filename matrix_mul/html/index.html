@@ -3,54 +3,87 @@
   <head>
     <meta charset="utf-8">
     <title>Matrix Rechner</title>
-    <link rel="icon" type="image/png"  href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Earth_recycle.svg/145px-Earth_recycle.svg.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png"/></link>
+    <link rel="stylesheet" href="style.css"></link>
     <script src="matrix_mul.js"></script>
-
   </head>
   <body>
-
     <header id="page_header">
-        Matrix Rechner
+        <img id="logo" src="Rust_Logo.png" alt="Rust Logo" width="40" height="40">  Matrix Rechner
     </header>
-
     <section>
-            <table >
-                <tr id="head">
-                    <td>A</td>
-                    <td></td>
-                    <td colspan="2">B</td>
-                    <td></td>
-                    <td>C</td>
-                </tr>
-                <tr>
-                    <td><textarea id="mat_A" class="txtInput" rows="10" cols="20" autocomplete="off" wrap="off"  placeholder="1,2,3"></textarea></td>
-                    <td>
-        				<select id="operation">
-        				  <option value="add">+</option>
-        				  <option value="mull" selected>&#149;</option>
-        				</select>
-        			</td>
-                    <td colspan="2"><textarea id="mat_B" class="txtInput" rows="10" cols="20" autocomplete="off" wrap="off"  placeholder="1,2,3"></textarea></td>
-                    <td>=</td>
-                    <td><textarea id="mat_C" rows="10" cols="20" autocomplete="off" wrap="off" readonly ></textarea></td>
-                </tr>
-                <tr>
-                    <td colspan="6"><button type="button" id="btn_send" onclick="sendRequest()" >Berechnen</button></td>
-                </tr>
-                <td colspan="6">
-                    A: <input type="number" max="200" id="a_r"> x <input type="number" max="200" id="a_c"><br>
-                    B: <input type="number" max="200" id="b_r"> x <input type="number" max="200" id="b_c">
+        <table>
+            <tr class="head">
+                <td>A</td>
+                <td></td>
+                <td>B</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <textarea id="mat_A" class="mat_input" wrap="off" placeholder="1,2,3"></textarea>
                 </td>
-                <tr>
-                    <td colspan="3">
-						<button type="button" id="btn_rand" onclick="randomMat()" >Random</button>
-					</td>
-					<td colspan="3">
-						<button type="button" id="btn_clear" onclick="clearTextArea()" >Löschen</button>
-                    </td>
-                </tr>
-            </table><br>
+                <td></td>
+                <td>
+                    <textarea id="mat_B" class="mat_input" wrap="off" placeholder="1,2,3"></textarea>
+                </td>
+                <td></td>
+                <td class="control">
+                    <table id="setup_rand">
+                        <tr class="head">
+                            <td></td>
+                            <td>Zeilen</td>
+                            <td></td>
+                            <td>Spalten</td>
+                        </tr>
+                        <tr>
+                            <td>A:</td>
+                            <td><input type="number" max="200" id="a_r"></td>
+                            <td>x</td>
+                            <td><input type="number" max="200" id="a_c"></td>
+                        </tr>
+                        <tr>
+                            <td>B:</td>
+                            <td><input type="number" max="200" id="b_r"></td>
+                            <td>x</td>
+                            <td><input type="number" max="200" id="b_c"></td>
+                        </tr>
+                        <tr>
+                        <td colspan="4">
+    						<button type="button"  class="lower" id="btn_rand" onclick="randomMat()" >Random</button>
+    					</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <td colspan="5"><hr></td>
+            <tr>
+
+            </tr>
+            <tr class="head">
+                <td>A + B</td>
+                <td></td>
+                <td>A &#x95; B</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <textarea id="mat_add" class="mat_result"  readonly></textarea>
+                </td>
+                <td></td>
+                <td>
+                    <textarea id="mat_mul" class="mat_result"  readonly></textarea>
+                </td>
+                <td></td>
+                <td class="control">
+                    <div id="btn">
+                        <button type="button" id="btn_send" onclick="sendRequest()" >Berechnen</button> <br>
+                        <button type="button" class="lower" id="btn_clear" onclick="clearTextArea()" >Löschen</button>
+                    </div>
+                </td>
+        </table>
     </section>
   </body>
 </html>

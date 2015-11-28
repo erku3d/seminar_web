@@ -1,6 +1,8 @@
 //! einfache Operationen auf Matrizen
 
-
+use std::thread;
+use std::sync::{Arc, Mutex};
+extern crate num_cpus;
 
 
 /// Multiplikation zweier linearisierten Matrizen
@@ -64,6 +66,23 @@ pub fn matrix_mul(a: &Vec<i32>,b: &Vec<i32>,l: usize,m: usize,n: usize) ->  Opti
 /// let c = vector_add(&a, &b).unwrap();
 /// ```
 pub fn vector_add(a: &Vec<i32>,b: &Vec<i32>) -> Option<Vec<i32>>{
+
+    if a.len() != b.len(){
+        return None
+    }
+
+    let mut c: Vec<i32> = Vec::new();
+
+    for i in 0..a.len(){
+        c.push(a[i]+b[i]);
+    }
+
+    Some(c)
+
+
+}
+
+pub fn vector_add_as_slice(a: &[i32],b: &[i32]) -> Option<Vec<i32>>{
 
     if a.len() != b.len(){
         return None

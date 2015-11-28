@@ -5,7 +5,6 @@ html {
 }
 
 body {
-    background-color:#a0a0a0;
     font-family: Avenir, Arial, sans-serif;
     text-align:justify;
 }
@@ -15,64 +14,93 @@ header#page_header{
     top: -10px;
     width:100%;
 
+
     padding: 5px 25px 5px 25px; /* 20px 20px 20px;*/
     margin: 0 0 2% 0;
 
     text-align: center;
     font-size: 2.5rem;
-    color:#f1f1f1;
-    text-shadow: -1px -1px #4a4a4a ;
 
-    background-color:#4a4a4a;
+    text-shadow: -1px -1px #4a4a4a;
     box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
-    background: linear-gradient(#4a4a4a, black); /* Standard syntax */
-
+}
+img#logo{
+    position: relative;
+    top: 6px;
 }
 
-section, button, select {
-    font-size: 2rem;
+section, button {
+    font-size: 1.5rem;
 }
 
 section{
-    width:90%;
+    width:95%;
     height:auto;
-    max-width: 70rem;
-
+    max-width: 1000px;
     margin-right: auto;
     margin-left: auto;
-
-    width:100%;
-
     padding: 20px 20px 20px 20px;
 
-    background-color:#f1f1f1;
     box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
-
 }
-
 table{
     margin-left: auto;
     margin-right: auto;
 }
-tr#head{
+
+table#setup_rand, div#btn{
+    padding: 10px;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
+}
+
+tr.head{
     text-align: center;
 }
 
+td.control{
+    padding-left: 25px;
+}
+
 textarea{
-    background-color:#ffffff;
-    /*box-shadow: 0px 0px 5px #dc4e00;*/
+    font-size: .7em;
+    min-width:150px;
+    min-height:150px;
 }
 
-textarea#mat_C{
-    background-color:#f1fff9;
+textarea.mat_result{
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
 }
-
 
 button{
-	width: 100%;	
-    padding: 10px 0 10px 0;
+	width: 100%;
+    padding: 5px 0 5px 0;
 }
 
-#btn_send{
-	margin-top: 25px;
+button.lower{
+    margin-top: 10px;
+}
+
+input{
+    width: 5rem;
+}
+
+/* Colors */
+body {
+    background-color: #779a2b;
+}
+header#page_header{
+    color:#f1f1f1;
+    background-color:#4a4a4a;
+    background: linear-gradient(#4a4a4a, #2b2b2b); /* Standard syntax */
+}
+section{
+    background-color:#ffffff;
+}
+table#setup_rand, div#btn, textarea.mat_input{
+    background-color:#ccddaa;
+}
+textarea.mat_result{
+    background-color:#dbddd7;
 }
