@@ -151,8 +151,6 @@ pub fn post_response(body: &MyBody) -> Response{
         }
     };
 
-    println!("{:?}",resp_body);
-
     Response::with((status::Ok, json::encode(&resp_body).unwrap())) //Matrix als JSON codieren
 }
 

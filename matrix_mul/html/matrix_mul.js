@@ -165,8 +165,6 @@ function showResult(resp){
 
     var body = JSON.parse(resp);
 
-    alert(resp);
-
     try{
         document.getElementById("mat_add").wrap="off";
         document.getElementById("mat_add").value = myMatrixToString(body.mat_a);
