@@ -67,7 +67,7 @@
   showstringspaces=false,          % underline spaces within strings only
   showtabs=false,                  % show tabs within strings adding particular underscores
   stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
-  stringstyle=\color{mymauve},     % string literal style
+  %stringstyle=\color{mymauve},     % string literal style
   tabsize=2,	                   % sets default tabsize to 2 spaces
   title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
 }
@@ -409,8 +409,42 @@ Nachteile
 
 
 \section{Demo}
-\begin{frame}{Demo}
+\begin{frame}[fragile]{Demo}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{uebersicht.png}
+\vspace{1cm}
+\pause
+\begin{minipage}[t]{.4\textwidth}
+{\scriptsize Request Body}
+\begin{lstlisting}
+{
+ "mat_a":{
+   "rows": 3,
+   "cols": 3,
+   "elem": ["1","2",...]},
+ "mat_b":{...}
+}
+\end{lstlisting}				
+\end{minipage}
+\hspace{2cm}
+\pause
+\begin{minipage}[t]{.3\textwidth}
+{\scriptsize Response Body}
+\begin{lstlisting}
+{
+ "message":"Fehler",
+ "mat_a":{...},
+ "mat_b":{...}
+}
+\end{lstlisting}				
+\end{minipage}
 
+\end{center}
+\end{frame}
+\begin{frame}{Demo}
+\begin{center}
+\includegraphics[width=\textwidth]{Iron_Server.png}
+\end{center}
 \end{frame}
 
 \end{document}

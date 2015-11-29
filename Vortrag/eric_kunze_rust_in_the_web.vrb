@@ -1,38 +1,31 @@
-\frametitle{Ownership and Borrowing}
-\begin{itemize}
-    \item mutable borrow
-    \begin{itemize}
-        \item zu einem Zeitpunkt darf \textbf{nur eine} Referenz existieren
-        \item der Besitzer dieser Referenz kann die Ressource \textbf{verändern}
-        \pause
-    \end{itemize}
-\end{itemize}
+\frametitle{Demo}
 \begin{center}
-\hspace{3pt}
-\begin{minipage}[t]{.48\textwidth}
+\includegraphics[width=0.8\textwidth]{uebersicht.png}
+\vspace{1cm}
+\pause
+\begin{minipage}[t]{.4\textwidth}
+{\scriptsize Request Body}
 \begin{lstlisting}
-fn foo() {
-  let mut y
-      = vec![1,2,3,4,5];
-  let mut x: Vec<i32>
-      = Vec::new();
-
-  bar(&y, &mut x); // Ok
-  bar(&y, &mut y);
-      // Compiler Error
+{
+ "mat_a":{
+   "rows": 3,
+   "cols": 3,
+   "elem": ["1","2",...]},
+ "mat_b":{...}
 }
 \end{lstlisting}
 \end{minipage}
-\hspace{3pt}
-\begin{minipage}[t]{.47\textwidth}
+\hspace{2cm}
+\pause
+\begin{minipage}[t]{.3\textwidth}
+{\scriptsize Response Body}
 \begin{lstlisting}
-fn bar(y: &Vec<i32>,
-       x: &mut Vec<i32>){
-
-  for v in y{
-    x.push(*v);
-  }
+{
+ "message":"Fehler",
+ "mat_a":{...},
+ "mat_b":{...}
 }
 \end{lstlisting}
 \end{minipage}
+
 \end{center}
