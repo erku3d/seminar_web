@@ -16,7 +16,6 @@
 \end{lstlisting}
 \end{minipage}
 \hspace{2cm}
-\pause
 \begin{minipage}[t]{.3\textwidth}
 {\scriptsize Response Body}
 \begin{lstlisting}

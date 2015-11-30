@@ -80,7 +80,7 @@
 
 \begin{document}
 
-\begin{frame}{\centerline{Seminar Web Engineering}}
+\begin{frame}{\centerline{Proseminar Web Engineering}}
 	\begin{center}
 		\includegraphics[height=3cm]{Rust_Logo.eps}\\~\\
 		\Large \textbf{Rust in the Web}\\~\\
@@ -128,7 +128,7 @@
 
 \begin{frame}{Entstehungsgeschichte}
 	\begin{itemize}
-	  \item 2006 persönliches Projekt von Graydon Hoare
+	  \item 2006 Projekt von Graydon Hoare
 	  \item ab 2009 Projekt bei Mozilla
 	  \item 15. Mai 2015 Veröffentlichung der Version 1.0
 	  \pause
@@ -151,11 +151,13 @@ Rust: Safe System Programming
 	      \pause
 	      \item Kontrolle 
 	      \begin{itemize}
-	          \item minmale Runtime
+	          \item minimale Runtime
 	          \item keine Garbage Collection
 	      \end{itemize}
 	      \pause
 	      \item Sicherheit      
+	      \pause
+	      \item Parallelität
 	      \pause
 	      \item Features von höheren und funktionalen Programmiersprachen
 	      \begin{itemize}
@@ -214,8 +216,9 @@ fn bar(x: Vec<i32>) {
 	    \pause
 	    \item shared borrow  
 	    \begin{itemize}
-	      \item die Referenz ist \textbf{unveränderlich}
-	      \item die Ressource kann mehrfach verliehen werden
+	      \item der Besitzer dieser Referenz kann die Ressource \textbf{nicht verändern} 
+	      %die Referenz ist \textbf{unveränderlich}
+	      \item die Ressource kann \textbf{mehrfach} verliehen werden
 	      \pause
 	    \end{itemize}
 	\end{itemize}
@@ -293,7 +296,7 @@ fn bar(y: &Vec<i32>,
 
 \begin{frame}{Vor- und Nachteile von Rust}
 \pause
-\begin{minipage}[t]{.45\textwidth}
+\begin{minipage}[t]{.46\textwidth}
 Vorteile
 \begin{itemize}
   \item Sicherheit und Geschwindigkeit
@@ -306,7 +309,7 @@ Vorteile
 \end{itemize}
 \end{minipage}
 \hfill
-\begin{minipage}[t]{.45\textwidth}
+\begin{minipage}[t]{.46\textwidth}
 \pause
 Nachteile
 \begin{itemize}
@@ -398,14 +401,16 @@ Nachteile
 \section{Iron}
 \begin{frame}{Iron}
 \begin{itemize}
-    \item Webframework
+    \item Server Framework
     \item basiert auf Hyper
-    \item hochgradig Nebenläufig
+    \item Multithreaded
     \item Basisframework ist leicht erweiterbar
-    \item bietet Infrastruktur, um das Framework an individuelle Bedürfnisse anzupassen
+    \item bietet eine Infrastruktur, um das Framework an individuelle Bedürfnisse anzupassen
 \end{itemize}
-
 \end{frame}
+
+
+
 
 
 \section{Demo}
@@ -427,7 +432,6 @@ Nachteile
 \end{lstlisting}				
 \end{minipage}
 \hspace{2cm}
-\pause
 \begin{minipage}[t]{.3\textwidth}
 {\scriptsize Response Body}
 \begin{lstlisting}
@@ -447,4 +451,20 @@ Nachteile
 \end{center}
 \end{frame}
 
+\begin{frame}{Quellen}
+	\begin{itemize}
+	  \item doc.rust-lang.org
+	  \item rustbyexample.com
+	  \item[]
+	  \item arewewebyet.com
+	  \item ironframework.io
+	  \item[]
+	  \item[] \includegraphics[height=3.5mm]{youtube_logo.eps}
+	  	\begin{itemize}
+	  	\item GoogleTechTalks - The Rust Programming Language \\ (Alex Crichton, 06.06.2015)
+	  	\item stanfordonline - The Rust Programming Language  \\ (Aaron Turon, 12.03.2015)
+	  	\item Linux.conf.au 2015 - Servo: Building a Parallel Browser \\ (Jack Mofitt, 16.01.2015)
+	  	\end{itemize}
+	\end{itemize}
+\end{frame}
 \end{document}
