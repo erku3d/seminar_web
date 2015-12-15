@@ -73,7 +73,7 @@ pub fn get_response(req: &Request) -> Response{
     let extension = path.extension().unwrap().to_str().unwrap();
 
     //content-type auf Basis der Dateiendung setzen und Response zurückgeben
-
+	println!("--------------------------------------------------------");
     match extension{
         "css" => {res.headers.set_raw("content-type", vec![b"text/css".to_vec()]); res},
         "js" => {res.headers.set_raw("content-type", vec![b"text/javascript".to_vec()]); res},
@@ -92,7 +92,9 @@ pub fn get_response(req: &Request) -> Response{
 ///
 /// * `body` - der in den Struct `MyBody` geparste Body des Requests
 pub fn post_response(body: &MyBody) -> Response{
-
+	
+	println!("\nBody: {:?}\n", body);
+	
     let body_arc =  Arc::new(body.clone()); //mehrer Threads sollen auf den body zugreifen
 
     let body_ref_for_add = body_arc.clone(); //neue Referenz auf den Body
@@ -150,7 +152,10 @@ pub fn post_response(body: &MyBody) -> Response{
             }
         }
     };
-
+    
+    println!("\nResponse:\n{:?}",resp_body);
+    println!("--------------------------------------------------------");
+    
     Response::with((status::Ok, json::encode(&resp_body).unwrap())) //Matrix als JSON codieren
 }
 
@@ -159,6 +164,8 @@ pub fn post_response(body: &MyBody) -> Response{
 /// Je nach verwendeter Methode wird die entsprechende Funktion zur Auswertung des Requests aufgerufen
 /// Wird Post verwendet, wird zusätzlich der Body in den Struct `MyBody` geparset.
 pub fn process_request(req: &mut Request) -> IronResult<Response> {
+	println!("--------------------------------------------------------");
+	println!("{:?}", req);
 
     match req.method{
 
@@ -174,7 +181,7 @@ pub fn process_request(req: &mut Request) -> IronResult<Response> {
 
         _ => Ok(Response::with((status::InternalServerError,"Request Method nicht unterstützt"))),
     }
-
+    
 }
 const MAX_BODY_LENGTH: usize = 1024 * 1024 * 10;
 

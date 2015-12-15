@@ -4,7 +4,7 @@
 pub mod matrix;
 use matrix::*;
 
-/// Matrix mit Zeilen- und Spaltenanzahl, sowie den Elementen (zeilenweise) d
+/// Matrix mit Zeilen- und Spaltenanzahl, sowie den Elementen (zeilenweise) 
 #[derive(Debug)]
 pub struct MyMatrix{
     /// Zeilen

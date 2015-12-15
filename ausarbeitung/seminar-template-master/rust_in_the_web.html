@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Proseminar Web Engineering im Sommersemester 2014 - Store in the Cloud or not in the Cloud</title>
+  <link rel="stylesheet" type="text/css" href="main.css"/>
+  <link href='http://fonts.googleapis.com/css?family=Source+Serif+Pro:400,600,700' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+    <header>
+        <h2>Proseminar Web Engineering im Wintersemester 2015/16</h2>
+		<h1>Rust in the Web</h1>
+        <h2 class="author">Eric Kunze</h2>
+		<h3 class="affiliation">
+			Professur Verteilte und Selbstorganisierende Rechnersysteme<br/>
+			Technische Universität Chemnitz<br/>
+			Chemnitz, Deutschland
+		</h3>
+    </header>
+    <section>
+		<p> &nbsp;</p>
+		<h2>Inhalt</h2>
+		<h3><a href="#sec1">1. Einleitung</a></h3>
+		<h3><a href="#sec2">2. Ziel von Rust</a></h3>
+		<h3><a href="#sec3">3. Ownership and Borrowing</a></h3>
+		<h3><a href="#sec4">4. Vor- und Nachteile</a></h3>
+		<h3><a href="#sec5">5. Rust in the Web</a></h3>
+		<h3><a href="#sec6">6. Iron</a></h3>
+		<h3><a href="#sec7">7. Demo</a></h3>
+		<h3><a href="#sec8">8. Literaturverzeichnis</a></h3>	
+		<p> &nbsp;</p>
+    </section>
+    <section id="sec1">
+    	<h2>1. Einleitung</h2>
+        <p>
+			Die Programmiersprache Rust entstand im Jahr 2006 als persönliches Projekt von Graydon Hoar. Erst im Jahr 2009 wurde das Projekt von mozilla übernommen, als die Sprache soweit war, das man mit ihr einfache Demos und Tests durchführen konnte. Die Version 1.0 der Sprache wurde am 15.05.2015 veröffentlicht. <br>
+    	Mozilla verwendet derzeit Rust um Prototypen für neue Serverengings zu erstellen und zu testen. Dies hat die Sprache selbst stark beeinflusst, da an einen Webrowser besondere Anforderungen hinsichtlicher Performance und Sicherheit gestellt werden. Vorallem die derzeit entwickelte Layoutenging Servo, weleche in Rust geschrieben ist, hat die Sprache beeinflusst. Es stellt sich hier antürlich die Frage, warum man nicht zu etablierten Sprachen wie C++ oder Java gegriffen hat. Begründet wird dies von den Entwicklern von Rust vorallem damit, das es mit C++ bespeilsweise sehr leicht möglich ist unsicheren Code zu schreiben. C++ ermöglichste es dem Programmierer mithilfe von Zeigern sehr einfach auf Speicherbereiche zu zugreifen und diese Zuveränder. Geschieht dies unkontrolliert, kann es hierbei zu erheblichen Sicherheitslücken kommen, was fatale Auswirkungen für einen Webbrowser und deren Nutzer nach sich zieht. Da bei neueren Webbrowser verstärkt Multithreading zum einsatz kommt, muss auch hierbei besonderes auf die Sicherheit bezüglich des Speicherzugriffs geachtet werden. All dies ist mit C++ nur sehr umständlich zu realisieren.    	
+    	Die Sprache Java auf der anderen Seite bietet mit der Runtime und einem Garbage Collector eine relative Sicherheit bezühlich des Speicherzugriffs. Trozdem kann auch mit Hilfe derer Fehler wie Data Races bei der parallelen Programmierung nicht verhindert werden. <br>
+    	Mit Servo versucht Mozilla eine bessere Performance im Bereich der darstellung einer Website zu erreichen.
+    	Dazu werden diese komplexen und aufwendigen Tasks versucht parallel abzuarbeiten. All diese führte zu einer
+    	neuen mit C++ in konkurenz trettenden Programmiersprache, die zu imperativen Programmier paradikemen auch funktionale enthält.
+       	</p>
+	</section>
+	<section id="sec2">
+    	<h2>2. Ziel von Rust</h2>
+    	<p> Rust als Programmiersprache kann mit der Überschrift "Safe System Programming" beschrieben werden. Rust ist keine spezielle für den Bereich "Web" entwickelte Sprache, sondern kann vielmehr als sicherer Alternative zu C/C++ gesehen werden.
+    	 Im folgenden werden die wichtigsten Anforderungen, die die Entwickler an die Sprache gestellt haben kurz erläutert.
+    	</p>
+    	<h3> 2.1. Performance </h3>
+    	<p>
+			 C++ ist für Rust in Sachen Performance der Maßstab. Dies bedeutet, dass Programme
+			 die mit Rust geschrieben sind  mindestens genau so schnell seien sollen, wie das equivalente C++ Programm. Die Performance wurde daher bei jeder Desginentscheidung der Sprache mit berücksichtigt.
+			 Gerade bei der Entwicklung von Webrowsern spielt die Prformance eine große Rolle, da schon eine kleiner Verzögerungen bei der Darstellung von Websiten im Vergleich zur konkurenz wichtige Marktanteile kosten können.
+    	</p>
+    	<h3> 2.2. Kontrolle </h3>
+    	<p>
+			Rust ist eine systemnahe Programmiersprache und soll dem Programmieren im Bereich speicherzugriff viele freiheiten bieten. Wie auch bei C++ soll es möglich sein Speicher direkt zu adressieren und auf diesen Zuzugreifen. Auch soll
+			der Programmierer entscheidet, wann Speicher alloziert und freigegeben wird. Somit soll Rust nur mit einer möglichst minimalen Runtime und keinem Garbage Collector auskommen. 
+    	</p>
+    	<h3> 2.3. Sicherheit </h3>
+    	<p>
+			 Rust soll sicher sein. Sicherheit bezieht sich hierbei auf dem Speicherzugriff. Der Programmiere soll zwar die Möglichkeit haben möglichst Systemnah zu programmieren, trozdem sollen dafür bestimmte Regeln gelten, welche vor Fehleren wie bspw. "Use after free", "dangling pointers" oder "Iterator Invalidation" schützen. Besonders im Bereich parallele Programmierung kann man schnell den Überblick verlieren, welcher Thread gerade wie auf Speicher zugreift.
+			 Auch hier soll Rust mehr Sicherheit bieten, als etabliert Sprachen. Als Beispiel für einen häufig auftrettenden Fehler sei hier "Data Races" angeführt.
+    	</p>
+    	<h3> 2.4. Parallelität </h3>
+    	<p>
+			Die meiste der derzeit Verwendeten Hardware besitzt zwie oder mehr Prozessoren. Auch mit Rust soll es daher möglichsein diese sinnvoll zu nutzen. Die Sprache selbst enthält dabei allerdings keine Konstrukte für Multithreading, diese wird allerdings durch eine Standard Bibliothek angeboten.			 
+    	</p>
+    	<h3>2.5 Features von höheren und funktionalen Programmiersprachen</h3>
+    	<p>
+			Das Rust nicht nur eine sichere Variante von C bzw. C++ seine sollte, wurden auch Features von höheren und funktionalen Programmiersprachen in die Sprache übernommen. Diese ermögliche es dem Programmieren wie sehr komfortabel und schnell Programme zu schreiben. Als Beispiele für diese seine hier "Pattern Matching", "Traits" und "Closures" genannt. 
+			Rust ist trotz dieser keine Objektorientiert und funktionale Programiersprache, sondern setzt vielmeher auf einen Multiparadigmen Ansatzt. Dies ermöglichst es mit Rust viele Dinge zu tun, die man sonst mit einer dieser Sprachen tun würden.
+    	</p>
+
+    </section>
+    <section id="sec3">
+		<h2>3. Ownership and Borrowing </h2>
+		<p>
+			Ownership and Borrowing ist eines der wichtigstes Konzepte der Sprache und ist der Hauptunterschied zu allen etablierten Sprachen. Mit diesem Konzept erreicht Rust die Sicherheit und Schnelligkeit.
+			Dabei wird die Einhaltung dieser, auf den ersten Blick sehr streng erscheinden Regeln bei Compilieren überprüft. Dies bedeutet vorallem, das Fehler nicht erst zur Laufzeit erkannt werden sondern schon beim Compilieren des Programms berücksichtigt werden müssen. 
+		</p>
+		<h3>3.1 Ownership</h3>
+		<p>Unter Ownership versteht man, dass eine Resource zu einem Zeitpunkt genau einen Besitzer hat. Eine Resource kann dabei eine Variabel, im weitesen sinne ein Objekt oder auch eine Datei sein. Im Allgemeinen kann man bei einer Resource von einem reservierten Speicherbereich sprechen, der im laufe des Programms verwendet werden soll.
+		Ownership, also der Besitz an diesem Speicherbereich kann übertragen werden. Hat eine Ressource keinen Besitzer mehr, wird diese gelöscht. Man spricht hier auch von Determinitic Destruction. Dies bedeutet, dass bswp. bei einer Funktion alle lokal angelegten Variablen automatisch gelöscht werden, falls der Besitz an diesen nicht als Rückgabeparamter übertragen wurde. Dies betrifft Daten auf dem Stack, aber genauso Daten, die auf dem Heap angelegt wurden .				
+		</p>		
+		
+		<figure> 
+<!--
+			Quelltext als Bild
+-->
+			<pre>
+fn foo() {	
+  let mut y: Vec&lt;i32&gt; 
+      = Vec::new();
+		
+  y.push(4);	
+  bar(y);	
+  y.push(5); // Compiler Error	
+}</pre>
+			<pre>
+fn bar(x: Vec&lt;i32&gt;) {	
+  ...
+}</pre>
+		<figcaption>
+            <strong>Listing 1</strong>: übertragung von Ownership an eine Funktion.</a>
+        </figcaption>
+        </figure>
+        		
+		<h3>3.2 Boworring</h3>
+		<p>In Rust ist es ebenfalls möglich Speicher zu referenzieren. Man spricht hierbei von Borrowing, da der Besitzt an einer Ressource verliehen bzw. geborgt werden kann.
+		Dabei werden zwei Arten Borrowing unterschieden.
+		</p>
+		<h4>3.2.1 Shared Borrow</h4>
+		<p>
+			Beim Shared Borrow, kann der Besitzer dieser Referenz die Ressource nicht verändern, allerdings können mehrere Referenzen auf eine Ressource existieren. Man spricht hier auch von Aliasing. Hierbei wird nur ein "Read Only" zugriff auf die Ressource gewährt, da die anderen Referenzen keine Informationen  darüber erhalten würden, wenn die Ressource verändert würde. Beispielsweise könnte bei einem Array ein Element hinzugefühgt werden, was evtl. da zu führen würde, das auf dem Heap an der aktuellen position nicht genügend Speicherplatz vorhanden ist. Der Vektor würde dann an eine andere Stelle mit ausreichend Speicherplatz (falls vorhanden) verschoben. Dies würde aber nur die schreibende Referenz mitbekommen, alle anderen nicht. Jedenfalls nicht ohne geeignete Meschnismen. Dieses verhalten wird daher beim Shared Borrow verboten.
+		</p>
+
+		<h4>3.2.2 Mutable Borrow</h4>
+		<p>
+			Bei Mutable Borrow kann darf nur eine Referenz auf eine Ressource exisiteren und der Besitzer dieser Referenz darf die Ressource verändern. Hier wird die veränderung erlaubt, aber Aliasing verboten.
+		</p>
+    </section>
+    <section id="sec4">
+		<h2>4. Vor- und Nachteile von Rust</h2>
+		<p>Im folgenden soll die Vor- und Nachteile das Sprache, die in den vorhergehenden Abschnitten schon angesprochen wurden zusammen gefasst werden.
+		</p>
+		
+		<h3>4.1 Vorteile</h3>
+		<p> Ein großer Vorteil von Rust, ist, dass diese Sprache Performance und Kontrolle mit Sicherheit vereint. Sprachen wie C++ bieten zwar Geschwindigkeit und systemnahe Programmierung, aber gehen damit einher, dass sich der Programmierer immer gedanken um die Speichersicherheit seiner Software machen muss. Dies hat vorallem den Nachteil das man diese Ausreichend Testen muss. Mit Rust werden viele dieser Fehler schon beim Kompilieren erkannt. Der Compiler erlaubt es nicht ein unsicheres zu erstellen, wenn man sich an die Konzepte von Rust hält. (Es ist auch möglich mit Rust unsicher Programme zu erstellen, aber dies muss explizit in einer "unsafe" Umgebung im Quelltext angegen werden).
+		 </p>
+		 <p>
+			 
+		 </p>
+		 <h3>4.2 Nachteile</h3>
+    </section>
+    <section id="sec5">
+		<h2>5. Rust in the Web</h2>
+		
+    </section>
+    <section id="sec6">
+		<h2>6. Iron</h2>
+    </section>
+    <section id="sec7">
+		<h2> 7. Demo </h2>
+		<p>
+		<figure>
+          <img src="uebersicht.jpg" alt="Liste aller Benutzer"/>
+          <figcaption>
+            <strong>Abbildung 1</strong>: Liste der eingetragenen Benutzer <a href="#r13">[13]</a>.
+          </figcaption>
+        </figure>
+		</p>
+		<p>
+		<figure>
+          <img src="iron_server.jpg" alt="Liste aller Benutzer"/>
+          <figcaption>
+            <strong>Abbildung 1</strong>: Liste der eingetragenen Benutzer <a href="#r13">[13]</a>.
+          </figcaption>
+        </figure>
+		</p>
+		
+    </section>
+
+	<section class="references" id="sec8">
+	   		<h2>8. Literaturverzeichnis</h2>
+	</section>
+</body>
+</html>
