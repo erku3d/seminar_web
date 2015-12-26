@@ -34,9 +34,10 @@
     <section id="sec1">
     	<h2>1. Einleitung</h2>
         <p>
-			Die Programmiersprache Rust entstand im Jahr 2006 als persönliches Projekt von Graydon Hoar. Erst im Jahr 2009 wurde das Projekt von mozilla übernommen, als die Sprache soweit war, das man mit ihr einfache Demos und Tests durchführen konnte. Die Version 1.0 der Sprache wurde am 15.05.2015 veröffentlicht. <br>
-    	Mozilla verwendet derzeit Rust um Prototypen für neue Serverengings zu erstellen und zu testen. Dies hat die Sprache selbst stark beeinflusst, da an einen Webrowser besondere Anforderungen hinsichtlicher Performance und Sicherheit gestellt werden. Vorallem die derzeit entwickelte Layoutenging Servo, weleche in Rust geschrieben ist, hat die Sprache beeinflusst. Es stellt sich hier antürlich die Frage, warum man nicht zu etablierten Sprachen wie C++ oder Java gegriffen hat. Begründet wird dies von den Entwicklern von Rust vorallem damit, das es mit C++ bespeilsweise sehr leicht möglich ist unsicheren Code zu schreiben. C++ ermöglichste es dem Programmierer mithilfe von Zeigern sehr einfach auf Speicherbereiche zu zugreifen und diese Zuveränder. Geschieht dies unkontrolliert, kann es hierbei zu erheblichen Sicherheitslücken kommen, was fatale Auswirkungen für einen Webbrowser und deren Nutzer nach sich zieht. Da bei neueren Webbrowser verstärkt Multithreading zum einsatz kommt, muss auch hierbei besonderes auf die Sicherheit bezüglich des Speicherzugriffs geachtet werden. All dies ist mit C++ nur sehr umständlich zu realisieren.    	
-    	Die Sprache Java auf der anderen Seite bietet mit der Runtime und einem Garbage Collector eine relative Sicherheit bezühlich des Speicherzugriffs. Trozdem kann auch mit Hilfe derer Fehler wie Data Races bei der parallelen Programmierung nicht verhindert werden. <br>
+		Die Programmiersprache Rust entstand im Jahr 2006 als persönliches Projekt von Graydon Hoar. Erst im Jahr 2009 wurde das Projekt von Mozilla übernommen, als die Sprache soweit war, das man mit ihr einfache Demos und Tests durchführen konnte. Die Version 1.0 der Sprache wurde am 15.05.2015 veröffentlicht. <a href="#r4">[4]</a><br>
+    	Mozilla verwendet derzeit Rust um Prototypen für neue Serverengings zu erstellen und zu testen. Dies hat die Sprache selbst stark beeinflusst, da an einen Webbrowser besondere Anforderungen hinsichtlich Performance und Sicherheit gestellt werden. Vor allem die derzeit entwickelte Layoutenging Servo, welche in Rust geschrieben ist, hat die Sprache beeinflusst. Es stellt sich hier antürlich die Frage, warum man nicht zu etablierten Sprachen wie C++ oder Java gegriffen hat.
+        Begründet wird dies von den Entwicklern von Rust vor allem damit, das es mit C++ beispielsweise sehr leicht möglich ist unsicheren Code zu schreiben. Beispielsweise ermöglicht C++ dem Programmierer, mithilfe von Zeigern sehr einfach auf Speicherbereiche zu zugreifen und diese zu verändern. Geschieht dies unkontrolliert, kann es hierbei zu erheblichen Sicherheitslücken kommen, was fatale Auswirkungen für einen Webbrowser und deren Nutzer nach sich zieht. Da bei neueren Webbrowser verstärkt Multithreading zum einsatz kommt, muss auch hierbei besonderes auf die Sicherheit bezüglich des Speicherzugriffs geachtet werden. All dies ist mit C++ nur sehr umständlich zu realisieren.    	
+    	Die Sprache Java auf der anderen Seite bietet mit der Runtime und einem Garbage Collector eine relative Sicherheit bezüglich des Speicherzugriffs. Trotzdem kann auch mit Hilfe derer Fehler wie Data Races bei der parallelen Programmierung nicht verhindert werden. <br>
     	Mit Servo versucht Mozilla eine bessere Performance im Bereich der darstellung einer Website zu erreichen.
     	Dazu werden diese komplexen und aufwendigen Tasks versucht parallel abzuarbeiten. All diese führte zu einer
     	neuen mit C++ in konkurenz trettenden Programmiersprache, die zu imperativen Programmier paradikemen auch funktionale enthält.
@@ -86,24 +87,29 @@
 		</p>		
 		
 		<figure> 
-<!--
-			Quelltext als Bild
--->
-			<pre>
-fn foo() {	
-  let mut y: Vec&lt;i32&gt; 
-      = Vec::new();
-		
-  y.push(4);	
-  bar(y);	
+<pre>
+fn foo() {
+  // anlegen eines neuen Vektors für Integerwerte
+  let mut y: Vec&lt;i32&gt; = Vec::new();		
+  
+  y.push(4);  //den Wert '4' zum Vektor hinzufügen
+  
+  bar(y);  //der Funktion 'bar' den Vektor übergeben
+           //-> Besitz wird übertragen 
+           
   y.push(5); // Compiler Error	
 }</pre>
-			<pre>
+
+<pre>
 fn bar(x: Vec&lt;i32&gt;) {	
   ...
+  //der übergebene Vektor kann wie eine 
+  //lokale Variable behandelt werden
+  
+  //am Ende der Funtkion wird 'x' gelöscht und der Speicher frei gegeben
 }</pre>
-		<figcaption>
-            <strong>Listing 1</strong>: übertragung von Ownership an eine Funktion.</a>
+		<figcaption style="clear: both;">
+            <strong>Listing 1</strong>: Übertragung von Ownership an eine Funktion.</a>
         </figcaption>
         </figure>
         		
@@ -164,6 +170,10 @@ fn bar(x: Vec&lt;i32&gt;) {
 
 	<section class="references" id="sec8">
 	   		<h2>8. Literaturverzeichnis</h2>
+	   		<p class="reference" id="r1">[1] The Rust Programming Language [Online]. <br> Available: <a href="https://doc.rust-lang.org/stable/book/">https://doc.rust-lang.org/stable/book/</a> (21.12.2015)</p>
+	   		<p class="reference" id="r2">[2] The Rust Design FAQ [Online]. <br>  Available: <a href="https://doc.rust-lang.org/stable/complement-design-faq.html">https://doc.rust-lang.org/stable/complement-design-faq.html</a> (21.12.2015)</p>
+	   		<p class="reference" id="r3">[3] The Rust Language FAQ [Online]. <br>  Available: <a href="https://doc.rust-lang.org/stable/complement-lang-faq.html">https://doc.rust-lang.org/stable/complement-lang-faq.html</a> (21.12.2015)</p>
+	   		<p class="reference" id="r4">[4] The Rust Project FAQ [Online]. <br>  Available: <a href="https://doc.rust-lang.org/stable/complement-project-faq.html">https://doc.rust-lang.org/stable/complement-project-faq.html</a> (21.12.2015)</p>
 	</section>
 </body>
 </html>
