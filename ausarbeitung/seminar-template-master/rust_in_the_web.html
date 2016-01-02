@@ -28,7 +28,8 @@
 		<h3><a href="#sec5">5. Rust in the Web</a></h3>
 		<h3><a href="#sec6">6. Iron</a></h3>
 		<h3><a href="#sec7">7. Demo</a></h3>
-		<h3><a href="#sec8">8. Literaturverzeichnis</a></h3>	
+		<h3><a href="#sec8">8. Fazit</a></h3>
+		<h3><a href="#sec9">9. Literaturverzeichnis</a></h3>	
 		<p> &nbsp;</p>
     </section>
     <section id="sec1">
@@ -259,31 +260,70 @@ fn bar(y: &Vec&lt;i32&gt;, x: &mut Vec&lt;i32&gt;){
 		
 		<h3>4.1 Vorteile</h3>
 		<p> 
-			Ein großer Vorteil von Rust ist, das viele Fehler, die den Speicherzugriff betreffen schon beim Kompilieren erkannt werden können. Erreicht wird dies, durch das in <a href="#sec3">Kapitel 3</a> vorgestellte Konzept Ownership und Borrowing. Damit ermöglicht Rust sichere systemnahe Programmierung. Die Verwendung dieses Konzepts für die parallele Programmierung vereinfacht es auch hier, Fehler zu vermeiden, die leicht mit andern Sprachen auftretet. 			Sicherer Programmierung ist auch mit C, C++ oder Java möglich, allerdings erfordert es erfahrene Programmierer und es
-			muss erheblich mehr aufwand betrieben werden um Sicherheit zu gewährleisten.<br>
-			Auch die Features von Funktionalen Programmiersprachen die in Rust enthalten sind machen es sehr komfortable mit Rust zu programmieren <!-- anders! -->			
-			Als Beispiele für diese seine hier &bdquo;Pattern Matching&ldquo;, &bdquo;Traits&ldquo; und &bdquo;Closures&ldquo; genannt.						
-			Patern Matching wird in Rust bspw. bei der Auswertung von Bedingungen eingesetzt. Wo in C++ komplizierte if/else Konstrukte nötig sind, kann dies in Rust meist elegant mit Pattern Matching realisiert werden. 
-			Traits ähneln sehr Interfaces in Sparchen, wie C++ oder Java. In der funtkionalen Programmiersprache Haskell kann man sie mit den Type Classes vergleichen. Sie bieten die Möglichkeit eine Sammlung von Funktionen zu deklarieren, die für ein Datentypen implementiert werden können <a href="#r1">[1]</a>.  Somit lassen sich Klassen ähnliche Strukturen in Rust definieren. Traits finden sich auch Programmiersprachen, wie PHP oder Perl.		
+			Ein großer Vorteil von Rust ist, dass viele Fehler, die den Speicherzugriff betreffen schon beim Kompilieren erkannt werden können. Erreicht wird dies, durch das in <a href="#sec3">Kapitel 3</a> vorgestellte Konzept Ownership und Borrowing. Damit ermöglicht Rust sichere systemnahe Programmierung. Die Anwendung dieses Konzepts für die parallele Programmierung vereinfacht es auch hier, Fehler zu vermeiden, die leicht mit andern Sprachen auftretet. Sicherer parallele Programmierung ist auch mit C, C++ oder Java möglich, allerdings erfordert es erfahrene Programmierer und es muss erheblich mehr Aufwand betrieben werden um Sicherheit zu gewährleisten. <br>
+			Rust eignet sich auch sehr gut für Programmieranfänger. Der Compiler liefert aussagekräftige Fehlerbeschreibungen, die mit Hilfe von Fehlercodes noch detaillierter und teilweise mit Beispielen noch genauer erklärt werden.<br>		
+			Auch die Features von Funktionalen Programmiersprachen die in Rust enthalten sind machen es sehr komfortable mit Rust zu programmieren.						
+			Als Beispiele für diese seine hier <i>Pattern Matching</i>, <i>Traits</i> und <i>Closures</i> genannt.						
+			Patern Matching wird in Rust bspw. bei der Auswertung von Bedingungen eingesetzt. Wo in C++ komplizierte if/else Konstrukte nötig sind, kann dies in Rust meist elegant mit Pattern Matching realisiert werden <a href="#r1">[1]</a>. <!--/match.html-->			
+			Traits ähneln sehr Interfaces in Sparchen, wie C++ oder Java. In der funtkionalen Programmiersprache Haskell kann man sie mit den Type Classes vergleichen <a href="#r9">[9]</a>. 		
+			Sie bieten die Möglichkeit eine Sammlung von Funktionen zu deklarieren, die für ein Datentypen implementiert werden können <a href="#r1">[1]</a>.  Somit lassen sich Klassen ähnliche Strukturen in Rust definieren. Traits finden sich auch Programmiersprachen, wie PHP oder Perl.		
 			Eine genauerer Gegenüberstellung von Rust und funtkionalen Programmiersprachen findet sich in <a href="#r9">[9]</a>. <br>
-			Mit der Sprache selbst, wird auch der Paketmanager Cargo installiert. Dieser ist hauptsächlich für drei Aufgaben zuständig: erzeugen das geschrieben Programms, den Download, sowie das erstellen der benötigten Abhängigkeiten <a href="#r1">[1]</a> <!-- /hello-cargo.html -->. Cargo lässt sich einfach über eine Konfigurationsdatei konfigurieren. <!-- nochmal anders --> 
-			Mittels Cargo lassen sich auch die Open Source Projekte auf crates.io herunterladen und für eigene Anwendungen nutzen. Unter  crates.io befindet sich das größte Repositorie für mit Rust geschriebene Bibliotheken (ca. 3.700, Stand Dezember 2015). <!-- TODO Zitat und Quelle -->
-			<br>
-			Eine wichtige Aufgabe bei der Softwareentwicklung ist die Dokumentation. Auch dafür bringt Rust eine nützliches Werkzeug mit. Mit rustdoc lässt sich einfach eine Dokumentation im Html Format erstellen. Dazu wird diese einfach in Markdown im Quellcode mit angegeben oder in einer extra Datei geschrieben. Die Dokumentation lässt sich so auch mit Cargo erstellen.<br>		
+			Mit der Sprache selbst, kann auch <i>Cargo</i> installiert werden. 
+			Cargo ist ein Werkzeug, das sich hauptsächlich um die Abhängigkeiten und das erstellen der Anwendung kümmert. Dazu lädt Cargo die benötigten Abhängigkeiten für ein Rustprojekt herunter und erstellt dieses, in dem es den Compiler mit den benötigten Parametern aufruft <a href="#r10">[10]</a>. 
+			 <!--evtl. noch das mit der .toml konfig datei rein-->
+			Mittels Cargo lassen sich auch die Open Source Projekte auf crates.io herunterladen und für eigene Anwendungen nutzen. Unter  crates.io befindet sich das offizielle Repository für mit Rust geschriebene Bibliotheken (ca. 3.700, Stand Januar 2016). <br>
+			Eine wichtige Aufgabe bei der Softwareentwicklung ist die Dokumentation. Auch dafür bringt Rust eine nützliches Werkzeug mit. Mit <i>rustdoc</i> lässt sich einfach eine Dokumentation einer Anwendung in HTML erstellen. Dazu wird diese einfach als Kommentar in Markdown (einer einfachen Auszeichnungssprache) im Quellcode mit angegeben oder in einer extra Datei geschrieben  <a href="#r1">[1]</a> <!--/documentation.html-->. Die Dokumentation lässt sich ebenfalls mit Cargo erstellen.<br>
+			Rust ist somit ein ... <!--TODO Schlussatz-->
 		 </p>
 		 <h3>4.2 Nachteile</h3>
 		 <p>
-			 Die hier angegeben Nachteile ergeben sich meist dadurch, dass Rust noch eine sehr junge Sprache ist. Rust befindet sich damit immer noch in der Entwicklung und unterliegt immer noch vielen Veränderungen. Auch wenn man sich mit der Version 1.0 <!-- TODO Zitat und Quelle --> zur Stabilität der Sprache verpflichtet hat, so gibt es noch viele Änderungen.
-			 Diese betreffen vor allem die Standardbibliothek und den Compiler, und gelten der Optimierung.  Für den Einsatz in einem produktiven Umfeld <!-- ? --> eignet sich die Sprache daher aber noch nicht. 
-			 
+			
+			 Die hier angegeben Nachteile ergeben sich meist dadurch, dass Rust noch eine sehr junge Sprache ist. Rust befindet sich damit immer noch in der Entwicklung und unterliegt immer noch vielen Veränderungen. <!--Auch wenn man sich mit der Version 1.0  zur Stabilität der Sprache verpflichtet hat, so gibt es noch viele Änderungen.--> <!-- TODO Zitat und Quelle -->
+			 Diese betreffen vor allem die Standardbibliothek und den Compiler, und gelten meist der Optimierung.  Für den Einsatz in einem produktiven Umfeld <!-- ? --> eignet sich die Sprache daher aber noch nicht.
+			 <!-- TODO ergänzen: Doku, kompilierzeit-->			 
 		 </p>
     </section>
     <section id="sec5">
 		<h2>5. Rust in the Web</h2>
 		<p>
-			
+			Rust ist keine speziell für den Bereich Web entwickelte Sprache. Da bei der Entwicklung Sprache die Sicherheit im Vordergrund steht, ist dieser aber ein sinnvoller Einsatzbereich für Rust. Auf crates.io finden sich dazu bereits viele bestehende Anwendungen und Bibliotheken, die für eigenen Projekte genutzt werden können. Eine Auswahl soll in diesem Kapitel kurz vorgestellt werden.			
 		</p>
-		
+		<p>
+			<h4> HTTP-Client und Server </h4>
+			<p>
+				<strong>Hyper</strong> ist eine in Rust geschriebene HTTP Implementation, die eine typsichere Abstraktion dieses Protokolls bietet. Mit Hyper lassen sich
+				sowohl einen HTTP/S Client als auch einen HTTP Server erstellen <a href="#r11">[11]</a> . 
+			</p>
+			<p>
+				<strong>tiny-http</strong> ist es ebenfalls möglich einen HTTP-Server zu erstellen. Bei der Entwicklung von tiny-http wurde viel Wert auf Geschwindigkeit gelegt und bei der Abarbeitung der Anfragen kommt Multithreading zum Einsatz <a href="#r12">[12]</a>. 
+			</p>			
+			<p>
+				<strong>Curl-Rust</strong> ist eine Anbindung an die <i>libcurl</i> Bibliothek für Rust <a href="#r13">[13]</a>. Die in C geschriebene Bibliothek, wird zur clientseitigen Dateiübertragung eingesetzt und unterstützt dazu viele Protokolle, wie bspw. HTTP, HTTPS, IMAP, POP3, FTP oder Telent <a href="#r14">[14]</a>. 
+			</p>
+			
+			<h4> Datenbanken</h4>
+			<p>
+				<strong>Rust-Postgres </strong> ist ein in Rust geschriebenes Frontend für PostgreSQL Datenbanken <a href="#r15">[15]</a>.
+			</p>			
+			<p>
+				<strong>Rusqlite </strong> ist ein Wrapper für SQLite Datenbanken<a href="#r16">[16]</a>.
+			</p>
+			<p>
+				<strong>redis-rs</strong> ist eine Bibliothek, um einen Client für eine <i>Redis</i> Datenbank zu erstellen <a href="#r17">[17]</a>. Redis ist eine  In-Memory-Datenbank mit einem Key-Value Datenmodell, wobei viele verschiedenen Arten von Werten unterstützt werden, wie bspw.: Zeichenketten, Listen, Hashes oder auch Bitmaps <a href="#r18">[18]</a>.  
+			</p>
+			
+			<h4> Frameworks</h4>
+			<p>
+				<strong>Iron </strong> ist ein in Rust geschriebenes Serverframework <a href="#r19">[19]</a>. Dieses Framework soll im nächsten Kapitel näher betrachtet werden und kommt auch in der Demo zum Einsatz.
+			</p>			
+			<p>
+				<strong>Rustful </strong> ist ein weiteres Framework, mit dem Ziel eine einfache und modular aufgebaute Grundlage zu bieten, um HTTP Anwendungen zu erstellen. Rustful bietet dabei vor allem die Funktionalität Anwendungen mit  REST zu erstellen. <!--TODO anders!-->   <a href="#r20">[20]</a>.
+			</p>
+			
+			<p>
+				<strong>nickel.rs </strong> ist ein Framework, was von dem Express Framework von JavaScript inspiriert wurde. <a href="#r21">[21]</a>.
+			</p>
+		</p>
     </section>
     <section id="sec6">
 		<h2>6. Iron</h2>
@@ -308,9 +348,13 @@ fn bar(y: &Vec&lt;i32&gt;, x: &mut Vec&lt;i32&gt;){
 		</p>
 		
     </section>
+    
+    <section id="sec8">
+		<h2>8. Fazit</h2>
+    </section>
 
-	<section class="references" id="sec8">
-	   		<h2>8. Literaturverzeichnis</h2>
+	<section class="references" id="sec9">
+	   		<h2>9. Literaturverzeichnis</h2>
 	   		
 	   		<p class="reference" id="r1">[1] The Rust Programming Language [Online]. <br> Available: <a href="https://doc.rust-lang.org/stable/book/">https://doc.rust-lang.org/stable/book/</a> (21.12.2015)</p>
 	   		
@@ -332,9 +376,36 @@ fn bar(y: &Vec&lt;i32&gt;, x: &mut Vec&lt;i32&gt;){
 	   	  		
 	   		<p class="reference" id="r9">[9] Raphael ‘kena’ Poss (2014, July) Rust for functional programmers  [Online]. <br>  Available: <a href="http://science.raphael.poss.name/rust-for-functional-programmers.html">http://science.raphael.poss.name/rust-for-functional-programmers.html</a> (29.12.2015)</p>
 	   		
+	   		<p class="reference" id="r10">[10] Cargo Guide [Online]. <br> Available: <a href="http://doc.crates.io/guide.html">http://doc.crates.io/guide.html</a> (02.01.2016)</p>
+<!--Rust in the web-->  
+<!--TODO Autoren !-->
+			
+			<p class="reference" id="r11">[11] hyper [Online]. <br> Available: <a href="https://github.com/hyperium/hyper">https://github.com/hyperium/hyper</a> (02.01.2016)</p>
+	   		
+	   		<p class="reference" id="r12">[12] tiny-http [Online]. <br> Available: <a href="https://github.com/frewsxcv/tiny-http">https://github.com/frewsxcv/tiny-http</a> (02.01.2016)</p>
+	   		
+	   		<p class="reference" id="r13">[13] Curl-Rust [Online]. <br> Available: <a href="https://github.com/carllerche/curl-rust">https://github.com/carllerche/curl-rust</a> (02.01.2016)</p>
+	   		
+	   		<p class="reference" id="r14">[14] libcurl [Online]. <br> Available: <a href="http://curl.haxx.se/libcurl">http://curl.haxx.se/libcurl</a> (02.01.2016)</p>
+	   		
+	   		<p class="reference" id="r15">[15] Rust-Postgres  [Online]. <br> Available: <a href="http://sfackler.github.io/rust-postgres/doc/v0.10.2/postgres">http://sfackler.github.io/rust-postgres/doc/v0.10.2/postgres</a> (02.01.2016)</p>
+	   		
+	   		<p class="reference" id="r16">[16] Rusqlite  [Online]. <br> Available: <a href="https://github.com/jgallagher/rusqlite">https://github.com/jgallagher/rusqlite</a> (02.01.2016)</p>
+	   		
+	   		<p class="reference" id="r17">[17] redis-rs  [Online]. <br> Available: <a href="http://mitsuhiko.github.io/redis-rs/redis">http://mitsuhiko.github.io/redis-rs/redis</a> (02.01.2016)</p>
+	   		
+	   		<p class="reference" id="r18">[18] Redis [Online]. <br> Available: <a href="https://github.com/antirez/redis">https://github.com/antirez/redis</a> (02.01.2016)</p>
+	   		
+	   		<p class="reference" id="r19">[19] IRON - extensible web framework for rust [Online]. <br> Available: <a href="http://ironframework.io/">http://ironframework.io/</a> (02.01.2016)</p>
+	   		
+	   		<p class="reference" id="r20">[20] Rustful [Online]. <br> Available: <a href="https://github.com/Ogeon/rustful">https://github.com/Ogeon/rustful</a> (02.01.2016)</p>
+				
+			<p class="reference" id="r21">[21] nickel.rs [Online]. <br> Available: <a href="https://github.com/nickel-org/nickel.rs">https://github.com/nickel-org/nickel.rs</a> (02.01.2016)</p>	
+				
 	   		
 	   		
 	   		
+	   			   		
 	   		
 	</section>
 </body>

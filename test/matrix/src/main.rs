@@ -11,6 +11,8 @@ fn main() {
     let a = vec![3,2,1,1,0,2];
     let b = vec![1,2,4,5,0,1,3,2,4,0,0,1];
 
+	a=7;
+
     let l: usize = 2;  //Zeilen von A
     let m: usize = 3;  //Spalten von A, Zeilen von B
     let n: usize = 4;  //Spalten von B
