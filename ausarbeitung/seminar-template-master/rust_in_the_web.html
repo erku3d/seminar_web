@@ -289,6 +289,7 @@ fn bar(y: &Vec&lt;i32&gt;, x: &mut Vec&lt;i32&gt;){
 			Rust ist keine speziell für den Bereich Web entwickelte Sprache. Da bei der Entwicklung Sprache die Sicherheit im Vordergrund steht, ist dieser aber ein sinnvoller Einsatzbereich für Rust. Auf crates.io finden sich dazu bereits viele bestehende Anwendungen und Bibliotheken, die für eigenen Projekte genutzt werden können. Eine Auswahl soll in diesem Kapitel kurz vorgestellt werden.			
 		</p>
 		<p>
+			<!-- TODO als Fließtext! -->
 			<h4> HTTP-Client und Server </h4>
 			<p>
 				<strong>Hyper</strong> ist eine in Rust geschriebene HTTP Implementation, die eine typsichere Abstraktion dieses Protokolls bietet. Mit Hyper lassen sich
@@ -327,24 +328,44 @@ fn bar(y: &Vec&lt;i32&gt;, x: &mut Vec&lt;i32&gt;){
     </section>
     <section id="sec6">
 		<h2>6. Iron</h2>
+		<p>
+			Iron ist ein in Rust geschriebenes und auf Hyper (siehe <a href="#sec5">Kapitel 5</a>) basierendes Webframework. Es kann auf einem Rechner mit einem oder mehreren Threads genutzt werden oder auch auf mehreren Rechnern verteilt. <!-- TODO anders -->
+			Das Grundframework ist nicht durch unötige Funktionalität überladen. Für eigene Anwendung, kann das Framework einfach mit <i>Middleware</i>, <i>Plugins</i> oder <i>Modifiers</i> erweitert werden. 
+			Middleware kann beispielsweise für Routing, Mounting, Authentifizierung  oder Logging eingesetzt werden. Plugings und Modifierer eignen sich um auf eine  HTTP-Verbindung zuzugreifen oder diese zu Manipulieren. Iron bietet die Grundlage selbst Modifier, Plugins und Middleware zu erstellen und bietet Modifier, um Satus, Body und vescheidene Header zu setzen.<br>
+			Das Webframework wurde in der nachfolgend beschriebenen Demo, zum erstellen eines einfachen Webservers eingesetzt. 				
+		</p>
     </section>
     <section id="sec7">
 		<h2> 7. Demo </h2>
+		Um die funktionsweise von Iron zu demonsrieren wurde eine einfache Client-Server-Anwendung erstellt. Mit dieser soll zwei vom Benutzer eingegebene Matrizen an den Server übermittelt werden und von diesem, falls möglich, addiert und multipliziert werden. Das Ergebnis dieser Berechnung oder evtl. auftretende Fehler, werden dann dem Benutzer angezeigt.		
+		Der gesamte Quellcode kann unter  
+		<a href="#">Git Repo</a> <!-- TODO Git REPO erstellen -->
+		eingesehen und heruntergeladen werden. 
+		Die folgende Abbildung zeigt eine Übersicht über die erstellte Demo.
 		<p>
 		<figure>
-          <img src="uebersicht.jpg" alt="Liste aller Benutzer"/>
+          <img src="uebersicht.jpg" alt="Übersicht"/>
           <figcaption>
-            <strong>Abbildung 1</strong>: Liste der eingetragenen Benutzer <a href="#r13">[13]</a>.
+            <strong>Abbildung 1</strong> Vereinfachte Übersicht der Client-Server-Anwendung.
           </figcaption>
         </figure>
 		</p>
 		<p>
+		<h4> Client</h4>
+		Der Client ist eine HTML Website, in welcher der Benutzer zwei Matrizen eingeben kann. Diese wird vom Server mit allen zusätzlich benötigten Datein, wie Scripten und Bildern vom Server geladen. Der Benutzer kann dann selbst zwei Matrizen eingeben oder zwei randomisierte Matizen über das links sethenden Menü erstellen. Klickt der Nutzer auf <i>Berechnen</i>, so wird mittels JavaScript die  Eingabe auf grobe Fehler, wie beispielsweise leere Matrix, Verwendung von Buchstaben oder Fließkommazahlen überprüft und diese dem Benutzer angezeigt. Ist die Eingabe fehlerfrei, so werden beide Matrizen an den Server mittels POST Request übermittelt. Die Daten werden dabei in JSON codiert und in den Body des Requests geschrieben.
+		Der Server führt die Berechnungen aus und liefert das Ergebnis ebenfalls als JSON im Body der Respons zurück. Dieser wird wiederum mittels JavaScript geparsed und dem Benutzer angezeigt.			
+		</p>
+		<p>
+		<h4>Server</h4>
+		Das folgende Bild zeigt schematisch, die arbeitsweise des erstellten Servers.
+		<p>
 		<figure>
-          <img src="iron_server.jpg" alt="Liste aller Benutzer"/>
+          <img src="iron_server.jpg" alt="Iron Server"/>
           <figcaption>
-            <strong>Abbildung 1</strong>: Liste der eingetragenen Benutzer <a href="#r13">[13]</a>.
+            <strong>Abbildung 1</strong>: Liste der eingetragenen Benutzer
           </figcaption>
         </figure>
+		</p>
 		</p>
 		
     </section>
@@ -401,6 +422,11 @@ fn bar(y: &Vec&lt;i32&gt;, x: &mut Vec&lt;i32&gt;){
 	   		<p class="reference" id="r20">[20] Rustful [Online]. <br> Available: <a href="https://github.com/Ogeon/rustful">https://github.com/Ogeon/rustful</a> (02.01.2016)</p>
 				
 			<p class="reference" id="r21">[21] nickel.rs [Online]. <br> Available: <a href="https://github.com/nickel-org/nickel.rs">https://github.com/nickel-org/nickel.rs</a> (02.01.2016)</p>	
+			
+			<p class="reference" id="r22">[22] Iron - Documentation [Online]. <br> Available: <a href="http://ironframework.io/doc/iron">http://ironframework.io/doc/iron</a> (03.01.2016)</p>	
+			
+			
+			
 				
 	   		
 	   		
