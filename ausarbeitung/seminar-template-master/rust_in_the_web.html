@@ -38,12 +38,12 @@
 <!--
     	 It started as a Graydon Hoare's part-time side project in 2006 and remained so for over 3 years. Mozilla got involved in 2009 once the language was mature enough to run some basic tests and demonstrate the idea. Though it is sponsored by Mozilla, Rust is developed by a diverse community of enthusiasts.
 -->
-		Rust wurde 2006 von dem Entwickler Graydon Hoar, welcher bei Mozilla beschäftigt ist, entwickelt. Zu diser Zeit war die Sprache  nur ein persönliches Projekt von Hoar.
-		Erst drei Jahre später wurde das Projekt von Mozilla unterstützt, nach dem man mit der Sprache einige Test machen könnte und die Grundidee dahinter demonstrieren konnte <a href="#r4">[4]</a>. Die Version 1.0 der Sprache wurde am 15.05.2015 veröffentlicht <a href="#r5">[5]</a>. <br>
+		Rust wurde 2006 von dem Mozilla Entwickler Graydon Hoar entwickelt. Zu dieser Zeit war die Sprache  nur ein persönliches Projekt von Hoar.
+		Erst drei Jahre später wurde das Projekt von Mozilla unterstützt, nach dem man mit der Sprache einige Test durchführen und die Grundidee dahinter demonstrieren konnte <a href="#r4">[4]</a>. Die Version 1.0 der Sprache wurde am 15.05.2015 veröffentlicht <a href="#r5">[5]</a>. <br>
 <!--
     	Mozilla intends to use Rust as a platform for prototyping experimental browser architectures. Specifically, the hope is to develop a browser that is more amenable to parallelization than existing ones, while also being less prone to common C++ coding errors that result in security exploits. The name of that project is Servo.
 -->
-    	Bei Mozilla wird Rust vor allem zur Entwicklung von Prototypen neuere Webbrowser verwendet.  Dabei sollen diese verstärkt auf Parallelität setzten, als bereits existierende. Wobei sie wenigen anfällig für Sicherheitslücken seine sollen, die durch C++ Programmierfehler entstehen <a href="#r4">[4]</a>. 
+    	Bei Mozilla wird Rust vor allem zur Entwicklung von Prototypen neuere Webbrowser verwendet.  Dabei sollen diese verstärkt auf Parallelität setzten, als bereits existierende. Wobei sie weniger anfällig für Sicherheitslücken seine sollen, die durch C++ Programmierfehler entstehen <a href="#r4">[4]</a>. 
     	<!-- TODO evtl. noch einen Satz zum c++ Speichermodell -->
     	An einen Webbrowser werden besondere Anforderungen hinsichtlich Performance und Sicherheit.	Dies hat die Entwicklung der Sprache natürlich auch beeinflusst <!-- TODO Zitat -->
     	
@@ -58,7 +58,7 @@
         Begründet wird dies von den Entwicklern von Rust vor allem damit, das es mit C++ beispielsweise sehr leicht möglich ist unsicheren Code zu schreiben. Beispielsweise ermöglicht C++ dem Programmierer, mithilfe von Zeigern sehr einfach auf Speicherbereiche zu zugreifen und diese zu verändern. Geschieht dies unkontrolliert, kann es hierbei zu erheblichen Sicherheitslücken kommen, was fatale Auswirkungen für einen Webbrowser und deren Nutzer nach sich zieht.        
         Da bei neueren Webbrowser verstärkt Multithreading zum Einsatz kommt, muss auch hierbei besonderes auf die Sicherheit bezüglich des Speicherzugriffs geachtet werden. All dies kann mit C++ realisiert werden, erfordert aber erfahrene Programmierer und ist meist sehr aufwändig <a href="#r6">[6]</a>. <!-- (0:03:45 - 0:04:40) -->
        	
-    	Die Sprache Java auf der anderen Seite bietet mit der Runtime und einem Garbage Collector eine relative Sicherheit bezüglich des Speicherzugriffs. Bestimmte Speicherzugriffsfehler können damit verhidert werden. Trotzdem können auch mit Hilfe eines Garbage Collectors Fehler wie Data Races bei der parallelen Programmierung oder Iterator Invalidation nicht verhindert werden. <a href="#r8">[8]</a> <!-- (0:09:45) --><br>
+    	Die Sprache Java auf der anderen Seite bietet mit der Runtime und einem Garbage Collector eine relative Sicherheit bezüglich des Speicherzugriffs. Bestimmte Speicherzugriffsfehler können damit verhidert werden. Trotzdem können auch mit Hilfe eines Garbage Collectors, Fehler wie Data Races bei der parallelen Programmierung oder Iterator Invalidation nicht verhindert werden. <a href="#r8">[8]</a> <!-- (0:09:45) --><br>
     	
     	All diese führte zu einer neuen mit C++ in konkurenz trettenden Programmiersprache, die zu imperativen Programmier paradikemen auch funktionale enthält. <!-- evtl. raus -->
        	</p>
@@ -67,21 +67,20 @@
     	<h2>2. Ziel von Rust</h2>
     	<p> Rust als Programmiersprache kann mit &bdquo;Safe Systems Programming&ldquo; beschrieben werden 
     	<a href="#r7">[7]</a>. <!-- (0:01:15) -->
-    	Rust ist keine spezielle für den Bereich "Web" entwickelte Sprache, sondern kann vielmehr als eine sicherere Alternative zu C oder C++ gesehen werden.
+    	Rust ist keine spezielle für den Bereich &bdquo;Web&ldquo; entwickelte Sprache, sondern kann vielmehr als eine sicherere Alternative zu C oder C++ gesehen werden. <!-- TODO Zitat -->
     	Im folgenden werden die wichtigsten Anforderungen, die die Entwickler an die Sprache gestellt haben kurz erläutert.
-    	<!-- TODO Zitat -->
     	</p>
     	<h4> Performance </h4>
     	<p>
-			 C++ ist für Rust in Sachen Performance der Maßstab, da alle modernen Browser in C++ geschrieben sind 
-			 <a href="#r6">[6]</a>. <!-- (0:03:50) -->
+			 C++ ist für Rust in Sachen Performance der Maßstab, da alle modernen Browser in C++ geschrieben sind <a href="#r6">[6]</a>. <!-- (0:03:50) -->
 			 
 <!--
 			 That said, it is an explicit goal of Rust to be as fast as C++ for most things. Language decisions are made with performance in mind, and we want Rust to be as fast as possible.
 -->
 			 
-			 Dies bedeutet, dass Programme, die mit Rust geschrieben sind für viele Bereiche genau so schnell seien sollen, wie äquivalente C++ Programme. Die Performance wurde daher bei entwickeln der Sprache mit berücksichtigt <a href="#r3">[3]</a>. 
-			 Gerade bei der Entwicklung von Webbrowsern spielt die Performance eine große Rolle, da schon eine kleiner Verzögerungen bei der Darstellung von Websites im Vergleich zur Konkurrenz wichtige Marktanteile kosten können.
+			 Dies bedeutet, dass Rust für viele Bereiche genau so schnell sein sollen, wie C++. Die Performance wurde daher bei entwickeln der Sprache mit berücksichtigt <a href="#r3">[3]</a>. 
+			 Gerade bei der Entwicklung von Webbrowsern spielt die Performance eine große Rolle.
+			 <!--, da schon eine kleiner Verzögerungen bei der Darstellung von Websites im Vergleich zur Konkurrenz wichtige Marktanteile kosten können.-->
     	</p>
     	<h4> Kontrolle </h4>
     	<p>	
@@ -97,7 +96,7 @@
     	</p>
     	<h4> Sicherheit </h4>
     	<p>
-			 Rust soll sicher sein. Sicherheit bezieht sich hierbei auf den Speicherzugriff. Der Programmiere soll zwar die Möglichkeit haben möglichst Systemnah zu programmieren, trotzdem sollen dafür bestimmte Regeln gelten, welche vor Fehlern wie bspw. &bdquo;Use after free&ldquo;, &bdquo;dangling pointers&ldquo; oder &bdquo;Iterator Invalidation&ldquo; schützen. Bei &bdquo;Use after free&ldquo; wird auf Speicher zugegriffen (bspw. mit einem Zeiger, der auf diesen zeigt), der zuvor freigeben wurde. Ein solcher Zeiger wird auch &bdquo;dangling pointers&ldquo; genannt. Mit Rust soll dies nicht mehr möglich sein. Auch &bdquo;Iterator Invalidation&ldquo; soll verhindert werden. Hiebei wird ein sog. &bdquo;Container&ldquo; (in C++ bspw. vector&lt;T&gt;) mittels eines Iterators durchlaufen wird und dieser wärendessen seine Form ändert (bspw. wir ein Element hinzugefühgt und Speicher im Heap muss realloziert werden). 
+			 Rust soll sicher sein. Sicherheit bezieht sich hierbei auf den Speicherzugriff. Die Programmierer sollen zwar die Möglichkeit haben möglichst systemnah zu programmieren, trotzdem sollen dafür bestimmte Regeln gelten, welche vor Fehlern wie bspw. &bdquo;Use after free&ldquo;, &bdquo;dangling pointers&ldquo; oder &bdquo;Iterator Invalidation&ldquo; schützen. Bei &bdquo;Use after free&ldquo; wird auf Speicher zugegriffen (bspw. mit einem Zeiger, der auf diesen zeigt), der zuvor freigeben wurde. Ein solcher Zeiger wird auch &bdquo;dangling pointers&ldquo; genannt. Mit Rust soll dies nicht mehr möglich sein. Auch &bdquo;Iterator Invalidation&ldquo; soll verhindert werden. Hiebei wird ein sog. &bdquo;Container&ldquo; (in C++ bspw. vector&lt;T&gt;) mittels eines Iterators durchlaufen wird und dieser wärendessen seine Form ändert (bspw. wir ein Element hinzugefühgt und Speicher im Heap muss realloziert werden). 
 			 Hierbei kann es dazu kommen, dass der Iterator nicht mehr gültig ist. Auch dieser Fehlerfall soll mit Rust nicht möglich sein. 			 
 			 Besonders im Bereich parallele Programmierung kann es sehr schwer und Umständlich werden, die Speicherzugriffe aller Threads im Blick zu haben um mögliche Fehler auszuschließen. 			 
 				<!-- Besonders im Bereich parallele Programmierung kann man schnell den Überblick verlieren, welcher Thread gerade wie auf Speicher zugreift. -->			 
@@ -367,13 +366,16 @@ fn bar(y: &Vec&lt;i32&gt;, x: &mut Vec&lt;i32&gt;){
         </figure>
 		</p>
 		Nach dem Start des Servers, wartet dieser auf einen eingehenden Request. 
-		Als Vereinfachung wird bei einem GET Request versucht, die angegebenen zu laden und als Response zurück zu senden. Kommt es hier zu einem Fehler, wird ein ensprechnedenr HTTP Fehlercode als Response gesendet. Iron ermöglicht es auch in einer URL codierte Anfragen zu verarbeiten. Dazu kann die Middleware <i>urlencoded</i> genutz werden, welche die angegeben Parameter, nach dem parsen als Key Value Paare zur verfügung stellt. <!-- TODO Quelle: https://github.com/iron/urlencoded --> <br>
-		Kommt ein POST Request beim Server an, so wird der Body, falls vorhanden, mit dem <i>body-parser</i> <!--- TODO Quelle: https://github.com/iron/body-parser --> in ein Struct geparsed, welches dann weiter verarbeitet wird. Falles es hier zu einem Fehler kommt, wird ebefenfalls eine Resposne mit entsprechendem Fehlercode gesendet.<br>
-		Im nächsten Schritt werden zwei Threads gestartet. Der erste Thread soll die übegebene Matrizen Addieren. Da die Matrizen in linearer Form vorliegen, ist es einfach zu Prüfen, ob dies möglich ist, in dem man prüft, ob beide Vektoren die gleiche Länge bessitzen. Ist dies der Fall, so wird das Ergebnis der Addition zurück geliefert. Falls nicht liefert der Thread eine entsprechende Fehlermeldung zurück, welche dann auch dem Benutzer angezeigt werden soll.
-		Um dies zu ermöglichen kommt der von Rust bereitgestellte <i>Option</i> Struktur zum einsatz. 
-		... <!-- TODO Quellcode ansehen und genau beschreiben --> <br>
-		Die Multiplikation läuft simultan in einem zweiten Thread ab und liefert analog, das Ergebnis bzw. eine Fehlermeldung, je nach dem, ob die Berechnung möglich war.<br>
-		Sind beeide Threads beendet, so werden die Ergebnisse in eine Respons gepackt und diese gesendet.
+		Als Vereinfachung wird bei einem GET Request versucht, die angegebenen zu laden und als Response zurück zu senden. Kommt es hier zu einem Fehler, wird ein ensprechnedenr HTTP Fehlercode als Response gesendet. Iron ermöglicht es auch in einer URL codierte Anfragen zu verarbeiten. Dazu kann die Middleware <i>urlencoded</i> genutz werden, welche die angegeben Parameter, nach dem parsen als Key Value Paare zur verfügung stellt <a href="#r23">[23]</a>.<br>
+		Kommt ein POST Request beim Server an, so wird der Body, falls vorhanden, mit dem <i>body-parser</i> in ein Struct geparsed, welches dann weiter verarbeitet wird <a href="#r24">[24]</a>. Falles es hier zu einem Fehler kommt, wird ebefenfalls eine Resposne mit entsprechendem Fehlercode gesendet.<br>
+		Im nächsten Schritt werden zwei Threads gestartet. Der erste Thread soll die übegebene Matrizen Addieren. Da die Matrizen in linearer Form vorliegen, ist es einfach, über die Länge der Vektoren,
+		zu Prüfen, ob dies möglich ist.		
+		Ist dies der Fall, so wird das Ergebnis der Addition zurück geliefert. Falls nicht liefert der Thread 
+		<code>None</code> zurück. Um dies zu ermöglichen kommt der von Rust bereitgestellte Datentyp <code>Option&lt;T&gt;</code> zum Einsatz. Dieser ermöglicht es in diesem Fall, das die entsprechende Funktion entweder das Ergebnis der Berechnung zurück gibt oder &bdquo;nichts&ldquo; <a href="#r1">[1]</a> <!--/error-handling.html-->. 
+		<br>
+		Die Multiplikation läuft simultan in einem zweiten Thread ab und liefert analog, das Ergebnis bzw. <code>None</code>, je nach dem, ob die Berechnung möglich war.<br>
+		Sind beeide Threads beendet, so werden die Ergebnisse mit Hilfe von Pattern Matching ausgewertet und die entsprechende Response mit etwaigen Fehlermeldungen erstellt und zum Client gesendet.<br>
+		Der Server wartet im Anschluss auf den nächsten Request.
 		</p>		
     </section>
     
@@ -435,7 +437,9 @@ fn bar(y: &Vec&lt;i32&gt;, x: &mut Vec&lt;i32&gt;){
 			
 			<p class="reference" id="r22">[22] Iron - Documentation [Online]. <br> Available: <a href="http://ironframework.io/doc/iron">http://ironframework.io/doc/iron</a> (03.01.2016)</p>	
 			
+			<p class="reference" id="r23">[23] urlencoded [Online]. <br> Available: <a href="https://github.com/iron/urlencoded">https://github.com/iron/urlencoded</a> (04.01.2016)</p>	
 			
+			<p class="reference" id="r24">[24] body-parser [Online]. <br> Available: <a href="https://github.com/iron/body-parser ">https://github.com/iron/body-parser </a>(04.01.2016)</p>
 			
 				
 	   		
