@@ -332,12 +332,12 @@ fn bar(y: &Vec&lt;i32&gt;, x: &mut Vec&lt;i32&gt;){
 			Iron ist ein in Rust geschriebenes und auf Hyper (siehe <a href="#sec5">Kapitel 5</a>) basierendes Webframework. Es kann auf einem Rechner mit einem oder mehreren Threads genutzt werden oder auch auf mehreren Rechnern verteilt. <!-- TODO anders -->
 			Das Grundframework ist nicht durch unötige Funktionalität überladen. Für eigene Anwendung, kann das Framework einfach mit <i>Middleware</i>, <i>Plugins</i> oder <i>Modifiers</i> erweitert werden. 
 			Middleware kann beispielsweise für Routing, Mounting, Authentifizierung  oder Logging eingesetzt werden. Plugings und Modifierer eignen sich um auf eine  HTTP-Verbindung zuzugreifen oder diese zu Manipulieren. Iron bietet die Grundlage selbst Modifier, Plugins und Middleware zu erstellen und bietet Modifier, um Satus, Body und vescheidene Header zu setzen.<br>
-			Das Webframework wurde in der nachfolgend beschriebenen Demo, zum erstellen eines einfachen Webservers eingesetzt. 				
+			Das Webframework wurde in der nachfolgend beschriebenen Demo, zum erstellen eines einfachen Webservers eingesetzt. 	Auf einige weitere funtkionalitäten, die Iron bietet wird dort nochmal näher eingegangen.			
 		</p>
     </section>
     <section id="sec7">
 		<h2> 7. Demo </h2>
-		Um die funktionsweise von Iron zu demonsrieren wurde eine einfache Client-Server-Anwendung erstellt. Mit dieser soll zwei vom Benutzer eingegebene Matrizen an den Server übermittelt werden und von diesem, falls möglich, addiert und multipliziert werden. Das Ergebnis dieser Berechnung oder evtl. auftretende Fehler, werden dann dem Benutzer angezeigt.		
+		Um die Funktionsweise von Iron zu demonstrieren wurde eine einfache Client-Server-Anwendung erstellt. Mit dieser soll zwei vom Benutzer eingegebene Matrizen an den Server übermittelt werden und von diesem, falls möglich, addiert und multipliziert werden. Das Ergebnis dieser Berechnung oder evtl. auftretende Fehler, werden dann dem Benutzer angezeigt.		
 		Der gesamte Quellcode kann unter  
 		<a href="#">Git Repo</a> <!-- TODO Git REPO erstellen -->
 		eingesehen und heruntergeladen werden. 
@@ -352,26 +352,36 @@ fn bar(y: &Vec&lt;i32&gt;, x: &mut Vec&lt;i32&gt;){
 		</p>
 		<p>
 		<h4> Client</h4>
-		Der Client ist eine HTML Website, in welcher der Benutzer zwei Matrizen eingeben kann. Diese wird vom Server mit allen zusätzlich benötigten Datein, wie Scripten und Bildern vom Server geladen. Der Benutzer kann dann selbst zwei Matrizen eingeben oder zwei randomisierte Matizen über das links sethenden Menü erstellen. Klickt der Nutzer auf <i>Berechnen</i>, so wird mittels JavaScript die  Eingabe auf grobe Fehler, wie beispielsweise leere Matrix, Verwendung von Buchstaben oder Fließkommazahlen überprüft und diese dem Benutzer angezeigt. Ist die Eingabe fehlerfrei, so werden beide Matrizen an den Server mittels POST Request übermittelt. Die Daten werden dabei in JSON codiert und in den Body des Requests geschrieben.
-		Der Server führt die Berechnungen aus und liefert das Ergebnis ebenfalls als JSON im Body der Respons zurück. Dieser wird wiederum mittels JavaScript geparsed und dem Benutzer angezeigt.			
+		Der Client ist eine HTML Website, in welcher der Benutzer zwei Matrizen eingeben kann. Diese wird vom Server mit allen zusätzlich benötigten Dateien, wie Scripten und Bildern vom Server geladen. Der Benutzer kann dann selbst zwei Matrizen eingeben oder diese randomisiert über das links stehenden Menü erstellen. Klickt der Nutzer auf <i>Berechnen</i>, so wird mittels JavaScript die  Eingabe auf grobe Fehler, wie beispielsweise leere Matrix, Verwendung von Buchstaben oder Fließkommazahlen überprüft und diese dem Benutzer angezeigt. Ist die Eingabe fehlerfrei, so werden beide Matrizen an den Server mittels POST Request übermittelt. Die benötigten Daten werden dabei in JSON codiert und in den Body des Requests geschrieben.
+		Der Server führt die Berechnungen aus und liefert das Ergebnis ebenfalls als JSON im Body des Response zurück. Dieser wird wiederum mittels JavaScript geparsed und dem Benutzer angezeigt.			
 		</p>
 		<p>
 		<h4>Server</h4>
-		Das folgende Bild zeigt schematisch, die arbeitsweise des erstellten Servers.
+		Das folgende Bild zeigt schematisch, die Arbeitsweise des erstellten Servers.
 		<p>
 		<figure>
           <img src="iron_server.jpg" alt="Iron Server"/>
           <figcaption>
-            <strong>Abbildung 1</strong>: Liste der eingetragenen Benutzer
+            <strong>Abbildung 1</strong>: Vereinfachtes AKtivitätsdiagramm des Servers.
           </figcaption>
         </figure>
 		</p>
-		</p>
-		
+		Nach dem Start des Servers, wartet dieser auf einen eingehenden Request. 
+		Als Vereinfachung wird bei einem GET Request versucht, die angegebenen zu laden und als Response zurück zu senden. Kommt es hier zu einem Fehler, wird ein ensprechnedenr HTTP Fehlercode als Response gesendet. Iron ermöglicht es auch in einer URL codierte Anfragen zu verarbeiten. Dazu kann die Middleware <i>urlencoded</i> genutz werden, welche die angegeben Parameter, nach dem parsen als Key Value Paare zur verfügung stellt. <!-- TODO Quelle: https://github.com/iron/urlencoded --> <br>
+		Kommt ein POST Request beim Server an, so wird der Body, falls vorhanden, mit dem <i>body-parser</i> <!--- TODO Quelle: https://github.com/iron/body-parser --> in ein Struct geparsed, welches dann weiter verarbeitet wird. Falles es hier zu einem Fehler kommt, wird ebefenfalls eine Resposne mit entsprechendem Fehlercode gesendet.<br>
+		Im nächsten Schritt werden zwei Threads gestartet. Der erste Thread soll die übegebene Matrizen Addieren. Da die Matrizen in linearer Form vorliegen, ist es einfach zu Prüfen, ob dies möglich ist, in dem man prüft, ob beide Vektoren die gleiche Länge bessitzen. Ist dies der Fall, so wird das Ergebnis der Addition zurück geliefert. Falls nicht liefert der Thread eine entsprechende Fehlermeldung zurück, welche dann auch dem Benutzer angezeigt werden soll.
+		Um dies zu ermöglichen kommt der von Rust bereitgestellte <i>Option</i> Struktur zum einsatz. 
+		... <!-- TODO Quellcode ansehen und genau beschreiben --> <br>
+		Die Multiplikation läuft simultan in einem zweiten Thread ab und liefert analog, das Ergebnis bzw. eine Fehlermeldung, je nach dem, ob die Berechnung möglich war.<br>
+		Sind beeide Threads beendet, so werden die Ergebnisse in eine Respons gepackt und diese gesendet.
+		</p>		
     </section>
     
     <section id="sec8">
 		<h2>8. Fazit</h2>
+		<p>
+			
+		</p>
     </section>
 
 	<section class="references" id="sec9">
