@@ -28,15 +28,15 @@
 /// ```
 pub fn matrix_mul(a: &Vec<i32>,b: &Vec<i32>,l: usize,m: usize,n: usize) ->  Option<Vec<i32>>{
 
-    if (a.len() != l*m) || (b.len() != m*n){
+    if (a.len() != l*m) || (b.len() != m*n){ //prüfe, ob beide Matrizen die Richtige Groeße haben
         return None;
     }
 
-    let r = l * n;  //Anzahl der Elemente der Matrix c
+    let r = l * n;  //Anzahl der Elemente der Ergebnissmatrix c
 
     //c hat l Zeilen und n Spalten
 
-    let mut c: Vec<i32> = vec![0;r];
+    let mut c: Vec<i32> = vec![0;r]; //Vektor der laenge l mit 0 initialisiert
 
     for i in 0..r{
         for j in 0..m{

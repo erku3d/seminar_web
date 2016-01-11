@@ -19,33 +19,30 @@ use std::thread;
 use std::sync::Arc;
 
 #[derive(Debug, Clone, RustcDecodable, RustcEncodable)] // Automatically generate trait implementations
-/// Matrix, deren Elemente alle Zeilenweise als Vektor vorliegen
-pub struct MyMatrix{
-    /// Zeilenanzahl
-    pub rows: i32,
-    /// Spaltenanzhal
-    pub cols: i32,
-    ///Elemente der Matrix
-    pub elem: Vec<i32>,
+// Matrix, deren Elemente alle Zeilenweise als Vektor vorliegen
+pub struct MyMatrix{    
+    pub rows: i32, 		// Zeilenanzahl
+    pub cols: i32, 		// Spaltenanzhal
+    pub elem: Vec<i32>, //Elemente der Matrix
 }
-/// Struct in den das übermittelte JSON geparsed wird
+
+// Struct in den das übermittelte JSON geparsed wird
 #[derive(Debug, Clone, RustcDecodable, RustcEncodable)]
 pub struct MyBody{
-    message: Option<String>,
-    mat_a: MyMatrix,
-    mat_b: MyMatrix,
+	message: Option<String>,	//Feld für Fehlermeldungen
+    mat_a: MyMatrix, // Matrix A
+    mat_b: MyMatrix, // Matrix B
 }
 
-/// Erzeugt eine HTTP-Response auf eine Anfrage ohne Body. (GET Request)
-///
-/// Die Übergebenen Anfrage wird ausgewertet und die angegebene Datei (falls diese exisitiert) in eine Response gepackt.
-/// Wird eine Datei nicht gefunden, so wird ein entsprechender HTTP-Statuscode als Response zurück gegeben.
-///
-/// # Argumente
-///
-/// * `req` - vom Server empfange Anfrage
 pub fn get_response(req: &Request) -> Response{
-
+	// Erzeugt eine HTTP-Response auf eine Anfrage ohne Body. (GET Request)
+	
+	// Die Übergebenen Anfrage wird ausgewertet und die angegebene Datei (falls diese exisitiert) in eine Response gepackt.
+	// Wird eine Datei nicht gefunden, so wird ein entsprechender HTTP-Statuscode als Response zurück gegeben.
+	
+	//Argumente
+	//req - vom Server empfange Anfrage
+	
 	let path_vec = &req.url.path; //liefert Pfad als Array
     //Pfad auswerten
     let s = if path_vec[0] == ""{ //falls keien Datei angegben -> default index.html
@@ -82,16 +79,16 @@ pub fn get_response(req: &Request) -> Response{
     }
 }
 
-/// Erzeugt eine HTTP-Response auf eine Anfrage mit Body. (POST Request)
-///
-/// Wertet den übergeben Body aus und ruft die entsprechenden Methoden zur Berechnung der Ergebnissmatrix auf
-/// Die Ergebnissmatrizen werden anschließend in JSON codiert und in eine Response gepackt. Tritt ein Fehler auf, so wird ein
-/// entsprechender Fehlercode im Feld 'message' gepackt.
-///
-/// # Argumente
-///
-/// * `body` - der in den Struct `MyBody` geparste Body des Requests
-pub fn post_response(body: &MyBody) -> Response{
+fn post_response(body: &MyBody) -> Response{
+
+	// Erzeugt eine HTTP-Response auf eine Anfrage mit Body. (POST Request)
+	
+	// Wertet den übergeben Body aus und ruft die entsprechenden Methoden zur Berechnung der Ergebnissmatrix auf
+	// Die Ergebnissmatrizen werden anschließend in JSON codiert und in eine Response gepackt. Tritt ein Fehler auf, so wird ein
+	// entsprechender Fehlercode im Feld 'message' gepackt.
+	
+	// Argumente
+	// body - der in den Struct `MyBody` geparste Body des Requests
 	
 	println!("\nBody: {:?}\n", body);
 	
@@ -159,16 +156,19 @@ pub fn post_response(body: &MyBody) -> Response{
     Response::with((status::Ok, json::encode(&resp_body).unwrap())) //Matrix als JSON codieren
 }
 
-/// Erhält den Request und erzeugt eine Response als IronResult<Response>.
-///
-/// Je nach verwendeter Methode wird die entsprechende Funktion zur Auswertung des Requests aufgerufen
-/// Wird Post verwendet, wird zusätzlich der Body in den Struct `MyBody` geparset.
-pub fn process_request(req: &mut Request) -> IronResult<Response> {
+fn process_request(req: &mut Request) -> IronResult<Response> {
+	// Erhält den Request und erzeugt eine Response als IronResult<Response>.
+	// Je nach verwendeter Methode wird die entsprechende Funktion zur Auswertung des Requests aufgerufen
+	// Wird Post verwendet, wird zusätzlich der Body in den Struct `MyBody` geparset.
+	
 	println!("--------------------------------------------------------");
 	println!("{:?}", req);
-
+	
+	
+	//Asuwertung der im Request angegeben Methode
     match req.method{
-
+		
+		//POST
         iron::method::Method::Post => {
             match req.get::<bodyparser::Struct<MyBody>>() {
                 Ok(Some(struct_body)) => Ok(post_response(&struct_body)),
@@ -176,9 +176,11 @@ pub fn process_request(req: &mut Request) -> IronResult<Response> {
                 Err(err) => {println!("Error: {:?}", err);Ok(Response::with((status::InternalServerError,"Anfrage konnte nicht ausgewertet werden.")))},
             }
         }
-
+		
+		//GET
         iron::method::Method::Get => Ok(get_response(req)),
-
+		
+		//falls nicht POST oder GET verwendet wurde
         _ => Ok(Response::with((status::InternalServerError,"Request Method nicht unterstützt"))),
     }
     
@@ -187,7 +189,8 @@ const MAX_BODY_LENGTH: usize = 1024 * 1024 * 10;
 
 fn main() {
 
-    let mut chain = Chain::new(process_request);
+    let mut chain = Chain::new(process_request);  //Funktion, an den der eingehenden Request übergeben wird
     chain.link_before(persistent::Read::<bodyparser::MaxBodyLength>::one(MAX_BODY_LENGTH));
-    Iron::new(chain).http("localhost:3000").unwrap();
+    
+    Iron::new(chain).http("localhost:3000").unwrap(); //start des Servers
 }

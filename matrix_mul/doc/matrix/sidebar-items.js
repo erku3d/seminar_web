@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["matrix_mul","Multiplikation zweier linearisierten Matrizen"],["vector_add","Addition zweier Vektoren"]]});
